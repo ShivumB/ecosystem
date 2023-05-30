@@ -69,7 +69,7 @@ Fox.prototype.findFood = function (bunnies) {
     if (this.selectedFood >= 0 && distX * distX + distY * distY < Math.pow(bunnies[this.selectedFood].r + this.r, 2)) {
 
         bunnies[this.selectedFood].alive = false;
-        this.hunger = Math.max(0, this.hunger - 2);
+        this.hunger = Math.max(0, this.hunger - 10);
 
         if (this.hunger < 5) this.behavior = -1;
 
@@ -160,7 +160,7 @@ Fox.prototype.reproduce = function (foxes) {
         distX = foxes[i].x - this.x;
         distY = foxes[i].y - this.y;
 
-        if (foxes[i].maturity > 20 && foxes[i].urge > 10 && distX * distX + distY * distY < Math.pow(this.vision + foxes[i].r, 2)) {
+        if (foxes[i].maturity > 40 && foxes[i].urge > 40 && distX * distX + distY * distY < Math.pow(this.vision + foxes[i].r, 2)) {
 
             if (distX * distX + distY * distY < minDist) {
                 minDist = distX * distX;
@@ -178,8 +178,8 @@ Fox.prototype.reproduce = function (foxes) {
         this.urge = 0;
         foxes[this.selectedFox].urge = 0;
 
-        this.hunger += 2;
-        foxes[this.selectedFox].hunger += 2;
+        this.hunger += 5;
+        foxes[this.selectedFox].hunger += 5;
 
         foxes.push(new Fox(this.x, this.y, this.sprite, this.name));
         this.behavior = -1;
@@ -191,7 +191,7 @@ Fox.prototype.reproduce = function (foxes) {
     } else {
         this.explore();
 
-        if (this.hunger > 15) this.behavior = 1;
+        if (this.hunger > 20) this.behavior = 1;
         if (this.thirst > 10) this.behavior = 0;
     }
 
@@ -205,15 +205,15 @@ Fox.prototype.decideBehavior = function (foxes) {
     if (this.behavior == -1) {
 
         //first, check water - threshold of 20
-        if (this.thirst > 10) {
+        if (this.thirst > 5) {
             this.behavior = 0;
 
             //then, hunger - threshhold of 30
-        } else if (this.hunger > 15) {
+        } else if (this.hunger > 10) {
             this.behavior = 1;
 
             //then, reproduce
-        } else if (this.maturity > 20 && this.urge > 10) {
+        } else if (this.maturity > 40 && this.urge > 40) {
             this.behavior = 2;
         }
 
@@ -305,7 +305,7 @@ Fox.prototype.act = function (bunnies, foxes, carrots, water) {
     this.maturity += 0.01;
 
 
-    if (this.hunger > 30) this.alive = false;
+    if (this.hunger > 40) this.alive = false;
     if (this.thirst > 20) this.alive = false;
 
 }
