@@ -1,4 +1,4 @@
-function Bunny(x, y, sprite, name, speed) {
+function Bunny(x, y, sprite, name, speed) {//CHANGE: ADDED SPEED PARAMETER
 
   this.r = 15;
 
@@ -8,7 +8,7 @@ function Bunny(x, y, sprite, name, speed) {
   this.velX = 0;
   this.velY = 0;
 
-  this.speed = speed;
+  this.speed = speed;//INITIALIZING SPEED PARAMETER
   this.vision = 100;
 
   this.hunger = 0;
