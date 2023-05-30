@@ -335,7 +335,7 @@ Bunny.prototype.act = function (bunnies, foxes, carrots, water) {
   if (this.y < 0) this.y = 0;
   if (this.y > height) this.y = height;
 
-  this.hunger += 0.01 + 0.1 * this.velX + 0.1 * this.velY;
+  this.hunger += 0.01 * this.speed;
   this.thirst += 0.01;
 
   this.urge += 0.01;

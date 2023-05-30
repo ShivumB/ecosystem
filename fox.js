@@ -1,4 +1,4 @@
-function Fox(x, y, sprite, name) {
+function Fox(x, y, sprite, name, speed) {
 
     this.r = 15;
 
@@ -8,7 +8,7 @@ function Fox(x, y, sprite, name) {
     this.velX = 0;
     this.velY = 0;
 
-    this.speed = 1.5;
+    this.speed = speed;
     this.vision = 100;
 
     this.hunger = 0;
@@ -181,7 +181,7 @@ Fox.prototype.reproduce = function (foxes) {
         this.hunger += 5;
         foxes[this.selectedFox].hunger += 5;
 
-        foxes.push(new Fox(this.x, this.y, this.sprite, this.name));
+        foxes.push(new Fox(this.x, this.y, this.sprite, this.name, (this.speed + foxes[this.selectedFox].speed) / 2));
         this.behavior = -1;
     } else if (this.selectedFox >= 0) {
         let theta = Math.atan2(distY, distX);
@@ -298,7 +298,7 @@ Fox.prototype.act = function (bunnies, foxes, carrots, water) {
     if (this.y < 0) this.y = 0;
     if (this.y > height) this.y = height;
 
-    this.hunger += 0.01 + 0.01 * this.velX + 0.01 * this.velY;
+    this.hunger += 0.01 * this.speed;
     this.thirst += 0.01;
 
     this.urge += 0.01;

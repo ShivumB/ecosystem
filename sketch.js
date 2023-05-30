@@ -54,7 +54,7 @@ function setup() {
 
   foxes = [];
   for (let i = 0; i < 4; i++) {
-    foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteFox, names[Math.floor(Math.random()*names.length)]));
+    foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteFox, names[Math.floor(Math.random()*names.length)], 1.2 + Math.random() * .5));
   }
 
   chosenStat = bunnies[0];
@@ -84,7 +84,7 @@ mouseClicked = function() {
   } else {
 
     if(mouseY > 500) {
-      foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteFox, names[Math.floor(Math.random()*names.length)] ));
+      foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteFox, names[Math.floor(Math.random()*names.length)], 1.2 + .4 * Math.random()));
     } else if(mouseY > 400) {
       bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteBunny, names[Math.floor(Math.random()*names.length)], Math.random() * .6 + .7));//CHANGE
     }
