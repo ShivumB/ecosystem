@@ -69,7 +69,7 @@ Fox.prototype.findFood = function (bunnies) {
     if (this.selectedFood >= 0 && distX * distX + distY * distY < Math.pow(bunnies[this.selectedFood].r + this.r, 2)) {
 
         bunnies[this.selectedFood].alive = false;
-        this.hunger = Math.max(0, this.hunger - 10);
+        this.hunger = Math.max(0, this.hunger - 15);
 
         if (this.hunger < 5) this.behavior = -1;
 
@@ -160,7 +160,7 @@ Fox.prototype.reproduce = function (foxes) {
         distX = foxes[i].x - this.x;
         distY = foxes[i].y - this.y;
 
-        if (foxes[i].maturity > 40 && foxes[i].urge > 40 && distX * distX + distY * distY < Math.pow(this.vision + foxes[i].r, 2)) {
+        if (foxes[i].maturity > 20 && foxes[i].urge > 10 && distX * distX + distY * distY < Math.pow(this.vision + foxes[i].r, 2)) {
 
             if (distX * distX + distY * distY < minDist) {
                 minDist = distX * distX;
@@ -181,7 +181,12 @@ Fox.prototype.reproduce = function (foxes) {
         this.hunger += 5;
         foxes[this.selectedFox].hunger += 5;
 
-        foxes.push(new Fox(this.x, this.y, this.sprite, this.name, (this.speed + foxes[this.selectedFox].speed) / 2));
+        let baseSpeed = (this.speed + foxes[this.selectedFox].speed)/2;
+
+        //if random chance, then: anything from 0.5x to 2x
+        if(Math.random() < 0.7) baseSpeed *= (0.5 + Math.random()*1.5);
+
+        foxes.push(new Fox(this.x, this.y, this.sprite, this.name, baseSpeed));
         this.behavior = -1;
     } else if (this.selectedFox >= 0) {
         let theta = Math.atan2(distY, distX);
@@ -205,22 +210,22 @@ Fox.prototype.decideBehavior = function (foxes) {
     if (this.behavior == -1) {
 
         //first, check water - threshold of 20
-        if (this.thirst > 5) {
+        if (this.thirst > 10) {
             this.behavior = 0;
 
-            //then, hunger - threshhold of 30
+            //then, hunger - threshhold of 20
         } else if (this.hunger > 10) {
             this.behavior = 1;
 
             //then, reproduce
-        } else if (this.maturity > 40 && this.urge > 40) {
+        } else if (this.maturity > 20 && this.urge > 10) {
             this.behavior = 2;
         }
 
         //if still doing nothing, then find water
-        if (this.behavior == -1 && 2 * this.thirst > this.hunger && this.thirst > 0) {
+        if (this.behavior == -1 && this.thirst >= this.hunger) {
             this.behavior = 0;
-        } else if(this.behavior == -1 && this.hunger > 0) {
+        } else if(this.behavior == -1) {
             this.behavior = 1;
         }
 
@@ -293,12 +298,12 @@ Fox.prototype.act = function (bunnies, foxes, carrots, water) {
     this.x += this.velX;
     this.y += this.velY;
 
-    if (this.x < 0) this.x = 0;
-    if (this.x > 1200) this.x = 1200;
-    if (this.y < 0) this.y = 0;
-    if (this.y > height) this.y = height;
+    if (this.x < 0) this.x = 1200;
+    if (this.x > 1200) this.x = 0;
+    if (this.y < 0) this.y = 600;
+    if (this.y > height) this.y = 0;
 
-    this.hunger += 0.01 * this.speed;
+    this.hunger += 0.01 + 0.01*this.speed;
     this.thirst += 0.01;
 
     this.urge += 0.01;

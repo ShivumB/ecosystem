@@ -49,12 +49,14 @@ function setup() {
 
   bunnies = [];
   for (let i = 0; i < 80; i++) {
-    bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteBunny, names[Math.floor(Math.random()*names.length)], Math.random() * .6 + .7));//CHANGE
+    //0.7 - 1.3
+    bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteBunny, names[Math.floor(Math.random() * names.length)], Math.random() * .6 + .7));
   }
 
   foxes = [];
   for (let i = 0; i < 4; i++) {
-    foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteFox, names[Math.floor(Math.random()*names.length)], 1.2 + Math.random() * .5));
+    //1.3 - 1.9
+    foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteFox, names[Math.floor(Math.random() * names.length)], 1.3 + Math.random() * .6));
   }
 
   chosenStat = bunnies[0];
@@ -66,27 +68,27 @@ function setup() {
 }
 
 
-mouseClicked = function() {
-  if(mouseX < 1200) {
+mouseClicked = function () {
+  if (mouseX < 1200) {
 
-    for(let i = 0; i < bunnies.length; i++) {
-      if(mouseX > bunnies[i].x - 15 && mouseX < bunnies[i].x + 15 && mouseY > bunnies[i].y - 19 && mouseY < bunnies[i].y + 19) {
+    for (let i = 0; i < bunnies.length; i++) {
+      if (mouseX > bunnies[i].x - 15 && mouseX < bunnies[i].x + 15 && mouseY > bunnies[i].y - 19 && mouseY < bunnies[i].y + 19) {
         chosenStat = bunnies[i];
       }
     }
 
-    for(let i = 0; i < foxes.length; i++) {
-      if(mouseX > foxes[i].x - 20 && mouseX < foxes[i].x + 20 && mouseY > foxes[i].y - 20 && mouseY < foxes[i].y + 20) {
+    for (let i = 0; i < foxes.length; i++) {
+      if (mouseX > foxes[i].x - 20 && mouseX < foxes[i].x + 20 && mouseY > foxes[i].y - 20 && mouseY < foxes[i].y + 20) {
         chosenStat = foxes[i];
       }
     }
 
   } else {
 
-    if(mouseY > 500) {
-      foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteFox, names[Math.floor(Math.random()*names.length)], 1.2 + .4 * Math.random()));
-    } else if(mouseY > 400) {
-      bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteBunny, names[Math.floor(Math.random()*names.length)], Math.random() * .6 + .7));//CHANGE
+    if (mouseY > 500) {
+      foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteFox, names[Math.floor(Math.random() * names.length)], 1.2 + .4 * Math.random()));
+    } else if (mouseY > 400) {
+      bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteBunny, names[Math.floor(Math.random() * names.length)], Math.random() * .6 + .7));//CHANGE
     }
 
   }
@@ -95,35 +97,22 @@ mouseClicked = function() {
 
 function draw() {
 
-  background(100,100,255);
+  //bakcgeround for buttons
+  background(100, 100, 255);
 
+  //background
   image(grass, 0, 0);
 
-  //text stats
-  if(chosenStat != null) {
-    textSize(20);
-    textAlign(CENTER);
-    text("speed:" + Math.round(chosenStat.speed*100)/100 + "\nhunger:" + Math.floor(chosenStat.hunger) + "\nthirst:" + Math.floor(chosenStat.thirst) + "\nmaturity:" + Math.floor(chosenStat.maturity) + "\nurge:" + Math.floor(chosenStat.urge) + "\nbehavior:" + chosenStat.behavior + "\nalive:" + chosenStat.alive + "\nname: " + chosenStat.name, 1275, 60);
-
-    text("bunnies:" + bunnies.length + "\nfoxes:" + foxes.length + "\ntime:" + (Math.floor(frame/100)), 1275, 300);
-
-    stroke(0);
-    strokeWeight(3);
-    noFill();
-    ellipse(chosenStat.x, chosenStat.y, 40, 40);
-  }
-
+  //buttons
   line(1200, 400, 1350, 400);
-
   image(spriteBunny, 1275 - 15, 450 - 19);
-
   line(1200, 500, 1350, 500);
-
   image(spriteFox, 1275 - 20, 550 - 20);
 
+  let avgBunnySpeed = 0;
+  let avgFoxSpeed = 0;
 
-
-  for(let i = 0; i < carrots.length; i++) {
+  for (let i = 0; i < carrots.length; i++) {
     carrots[i].act(spriteCarrot);
   }
 
@@ -133,10 +122,12 @@ function draw() {
 
   for (let i = 0; i < bunnies.length; i++) {
     bunnies[i].act(bunnies, foxes, carrots, water);
+    avgBunnySpeed += bunnies[i].speed;
   }
 
-  for(let i = 0; i < foxes.length; i++) {
+  for (let i = 0; i < foxes.length; i++) {
     foxes[i].act(bunnies, foxes, carrots, water);
+    avgFoxSpeed += foxes[i].speed;
   }
 
   for (let i = carrots.length - 1; i >= 0; i--) {
@@ -147,12 +138,14 @@ function draw() {
 
   for (let i = bunnies.length - 1; i >= 0; i--) {
     if (!bunnies[i].alive) {
+      avgBunnySpeed -= bunnies[i].speed;
       bunnies.splice(i, 1);
     }
   }
 
-  for(let i = foxes.length - 1; i >= 0; i--) {
-    if(!foxes[i].alive) {
+  for (let i = foxes.length - 1; i >= 0; i--) {
+    if (!foxes[i].alive) {
+      avgFoxSpeed -= foxes[i].speed;
       foxes.splice(i, 1);
     }
   }
@@ -175,6 +168,20 @@ function draw() {
 
     if (passed) carrots.push(new Carrot(x, y));;
 
+  }
+
+  //show stats
+  if (chosenStat != null) {
+    textSize(18);
+    textAlign(CENTER);
+    text("speed:" + Math.round(chosenStat.speed * 100) / 100 + "\nhunger:" + Math.floor(chosenStat.hunger) + "\nthirst:" + Math.floor(chosenStat.thirst) + "\nmaturity:" + Math.floor(chosenStat.maturity) + "\nurge:" + Math.floor(chosenStat.urge) + "\nbehavior:" + chosenStat.behavior + "\nalive:" + chosenStat.alive + "\nname: " + chosenStat.name, 1275, 20);
+
+    text("bunnies:" + bunnies.length + "\navg. speed:" + Math.round(100*avgBunnySpeed/bunnies.length)/100 + "\n\nfoxes:" + foxes.length + "\navg. speed:" + Math.round(100*avgFoxSpeed/foxes.length)/100 + "\n\ntime:" + (Math.floor(frame / 100)), 1275, 250);
+
+    stroke(0);
+    strokeWeight(3);
+    noFill();
+    ellipse(chosenStat.x, chosenStat.y, 40, 40);
   }
 
   frame++;

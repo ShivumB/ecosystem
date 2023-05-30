@@ -64,7 +64,7 @@ Bunny.prototype.findFood = function (carrots) {
   if (this.selectedFood >= 0 && distX * distX + distY * distY < Math.pow(carrots[this.selectedFood].r + this.r, 2)) {
 
     carrots[this.selectedFood].alive = false;
-    this.hunger = Math.max(0, this.hunger - 1);
+    this.hunger = Math.max(0, this.hunger - 2);
 
     if (this.hunger < 5) this.behavior = -1;
 
@@ -174,10 +174,15 @@ Bunny.prototype.reproduce = function (bunnies) {
     this.urge = 0;
     bunnies[this.selectedBunny].urge = 0;
 
-    this.hunger += 10;
-    bunnies[this.selectedBunny].hunger += 10;
+    this.hunger += 5;
+    bunnies[this.selectedBunny].hunger += 5;
 
-    bunnies.push(new Bunny(this.x, this.y, this.sprite, this.name, ((this.speed + bunnies[this.selectedBunny].speed) / 2) * (Math.random() * .6 + .7)));//new bunny has speed that is .7 to 1.3 of the avg of its parents
+    let baseSpeed = (this.speed + bunnies[this.selectedBunny].speed)/2;
+
+    //if random chance, then: anything from 0.5x to 2x
+    if(Math.random() < 0.3) baseSpeed *= (0.5 + Math.random()*1.5);
+
+    bunnies.push(new Bunny(this.x, this.y, this.sprite, this.name, baseSpeed));//new bunny has speed that is .7 to 1.3 of the avg of its parents
     this.behavior = -1;
   } else if (this.selectedBunny >= 0) {
     let theta = Math.atan2(distY, distX);
@@ -187,7 +192,7 @@ Bunny.prototype.reproduce = function (bunnies) {
   } else {
     this.explore();
 
-    if (this.hunger > 20) this.behavior = 1;
+    if (this.hunger > 10) this.behavior = 1;
     if (this.thirst > 10) this.behavior = 0;
   }
 
@@ -226,10 +231,10 @@ Bunny.prototype.decideBehavior = function (foxes) {
   if (this.behavior == -1) {
 
     //first, check water - threshold of 20
-    if (this.thirst > 5) {
+    if (this.thirst > 10) {
       this.behavior = 0;
 
-      //then, hunger - threshhold of 40
+      //then, hunger - threshhold of 20
     } else if (this.hunger > 10) {
       this.behavior = 1;
 
@@ -239,9 +244,9 @@ Bunny.prototype.decideBehavior = function (foxes) {
     }
 
     //if still doing nothing, then choose based on what need the most
-    if (this.behavior == -1 && this.thirst * 2 > this.hunger && this.thirst > 0) {
+    if (this.behavior == -1 && this.thirst >= this.hunger) {
       this.behavior = 0;
-    } else if (this.behavior == -1 && this.hunger > 0) {
+    } else if (this.behavior == -1) {
       this.behavior = 1;
     }
 
@@ -330,19 +335,19 @@ Bunny.prototype.act = function (bunnies, foxes, carrots, water) {
   this.x += this.velX;
   this.y += this.velY;
 
-  if (this.x < 0) this.x = 0;
-  if (this.x > 1200) this.x = 1200;
-  if (this.y < 0) this.y = 0;
-  if (this.y > height) this.y = height;
+  if (this.x < 0) this.x = 1200;
+  if (this.x > 1200) this.x = 0;
+  if (this.y < 0) this.y = 600;
+  if (this.y > height) this.y = 0;
 
-  this.hunger += 0.01 * this.speed;
+  this.hunger += 0.01 + 0.01*this.speed;
   this.thirst += 0.01;
 
   this.urge += 0.01;
   this.maturity += 0.01;
 
 
-  if (this.hunger > 40) this.alive = false;
+  if (this.hunger > 20) this.alive = false;
   if (this.thirst > 20) this.alive = false;
 
 }
