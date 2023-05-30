@@ -49,7 +49,7 @@ function setup() {
 
   bunnies = [];
   for (let i = 0; i < 80; i++) {
-    bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteBunny, names[Math.floor(Math.random()*names.length)]));
+    bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, spriteBunny, names[Math.floor(Math.random()*names.length)]), Math.random() * .6 + .7);
   }
 
   foxes = [];
