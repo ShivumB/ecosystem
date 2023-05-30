@@ -20,6 +20,6 @@ Other notable fields:
 ## Observations
 Interstingly enough, if you let the simulation play for 5 minutes or so, there's two possible outcomes.
 1. You're left with a ton of really fast bunnies. Foxes eat slow bunnies -> Only fast bunnies left -> Foxes can't catch the fast bunnies -> Foxes die of starvation -> Bunnies compete with each other for food -> Faster bunnies get more food.
-![Diagram 1](/repository/images/Ecosystem1.jpg?raw=true)
+![Diagram 1](/images/Ecosystem1.jpg?raw=true)
 2. The foxes prevail, and the bunnies go extinct. Then, the foxes go extinct since they have no food source.
-![Diagram 2](/repository/images/Ecosystem2.jpg?raw=true)
+![Diagram 2](/images/Ecosystem2.jpg?raw=true)
