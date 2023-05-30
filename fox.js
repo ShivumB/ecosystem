@@ -1,4 +1,4 @@
-function Fox(x, y, sprite, name, speed) {
+function Fox(x, y, name, speed) {
 
     this.r = 15;
 
@@ -26,8 +26,6 @@ function Fox(x, y, sprite, name, speed) {
     this.frame = 0;
 
     this.alive = true;
-
-    this.sprite = sprite;
 
     this.name = name;
 
@@ -186,7 +184,7 @@ Fox.prototype.reproduce = function (foxes) {
         //if random chance, then: anything from 0.5x to 2x
         if(Math.random() < 0.7) baseSpeed *= (0.5 + Math.random()*1.5);
 
-        foxes.push(new Fox(this.x, this.y, this.sprite, this.name, baseSpeed));
+        foxes.push(new Fox(this.x, this.y, this.name, baseSpeed));
         this.behavior = -1;
     } else if (this.selectedFox >= 0) {
         let theta = Math.atan2(distY, distX);
@@ -233,14 +231,7 @@ Fox.prototype.decideBehavior = function (foxes) {
 
 }
 
-Fox.prototype.act = function (bunnies, foxes, carrots, water) {
-
-
-    if (!this.alive) {
-        fill(255);
-        ellipse(this.x, this.y, this.r * 2, this.r * 2);
-        return;
-    }
+Fox.prototype.act = function (sprite, bunnies, foxes, carrots, water) {
 
     this.decideBehavior(foxes);
 
@@ -272,7 +263,7 @@ Fox.prototype.act = function (bunnies, foxes, carrots, water) {
     textAlign(CENTER);
     text(this.name, this.x, this.y - 22);
 
-    image(this.sprite, this.x - 20, this.y - 20);
+    image(sprite, this.x - 20, this.y - 20);
 
     //RUN COLLISIONS
     for (let i = 0; i < water.length; i++) {
