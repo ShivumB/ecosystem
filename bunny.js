@@ -296,7 +296,6 @@ Bunny.prototype.act = function (bunnies, foxes, carrots, water) {
   textSize(15);
   fill(0);
 
-  textAlign(CENTER);
   // text("hunger: " + (40 - Math.floor(this.hunger)) + "\nthirst:" + (20 - Math.floor(this.thirst)) + "\nmaturity:" + Math.floor(this.maturity) + "\nurge:" + Math.floor(this.urge), this.x, this.y - 75);
 
   // stroke(0);
@@ -306,6 +305,11 @@ Bunny.prototype.act = function (bunnies, foxes, carrots, water) {
 
   // fill(255, 255, 0);
   // ellipse(this.x, this.y, 30, 30);
+
+  textSize(10);
+  textAlign(CENTER);
+  text(this.name, this.x, this.y - 20);
+
   image(this.sprite, this.x - 15, this.y - 19);
 
 

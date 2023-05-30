@@ -258,8 +258,6 @@ Fox.prototype.act = function (bunnies, foxes, carrots, water) {
     textSize(20);
     fill(0);
 
-    textAlign(CENTER);
-
     // text("hunger: " + (30 - Math.floor(this.hunger)) + "\nthirst:" + (20 - Math.floor(this.thirst)), this.x, this.y - 40);
 
     // stroke(0);
@@ -269,6 +267,10 @@ Fox.prototype.act = function (bunnies, foxes, carrots, water) {
 
     // fill(255, 0, 0);
     // ellipse(this.x, this.y, 30, 30);
+
+    textSize(10);
+    textAlign(CENTER);
+    text(this.name, this.x, this.y - 20);
 
     image(this.sprite, this.x - 20, this.y - 20);
 
