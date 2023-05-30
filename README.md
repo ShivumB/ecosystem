@@ -19,7 +19,7 @@ Other important datafields:
 - Maturity: The animals can only reproduce if they're old enough.
 - Speed: This is an inheritable trait, randomly initialied at .7 - 1.3 for bunnies, and 1.2 - 1.8 for foxes. When animals reproduce, the offspring has speed between .7 - 1.3 * avg(speed of parents).
 ## Observations
-Interstingly enough, if you let the simulation play for 5 minutes or so, there's two possible outcomes.
+Interestingly enough, if you let the simulation play for 5 minutes or so, there's two possible outcomes.
 1. You're left with a ton of really fast bunnies. Foxes eat slow bunnies -> Only fast bunnies left -> Foxes can't catch the fast bunnies -> Foxes die of starvation -> Bunnies compete with each ` for food -> Faster bunnies get more food.
 ![Diagram 1](/images/Ecosystem1.jpg?raw=true)
 2. The foxes prevail, and the bunnies go extinct. Then, the foxes go extinct since they have no food source.

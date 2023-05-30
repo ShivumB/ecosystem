@@ -306,9 +306,9 @@ Bunny.prototype.act = function (bunnies, foxes, carrots, water) {
   // fill(255, 255, 0);
   // ellipse(this.x, this.y, 30, 30);
 
-  textSize(10);
+  textSize(12);
   textAlign(CENTER);
-  text(this.name, this.x, this.y - 20);
+  text(this.name, this.x, this.y - 22);
 
   image(this.sprite, this.x - 15, this.y - 19);
 
