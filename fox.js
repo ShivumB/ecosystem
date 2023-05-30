@@ -191,7 +191,7 @@ Fox.prototype.reproduce = function (foxes) {
     } else {
         this.explore();
 
-        if (this.hunger > 20) this.behavior = 1;
+        if (this.hunger > 10) this.behavior = 1;
         if (this.thirst > 10) this.behavior = 0;
     }
 
