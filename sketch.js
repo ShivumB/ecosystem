@@ -103,7 +103,7 @@ function draw() {
   if(chosenStat != null) {
     textSize(20);
     textAlign(CENTER);
-    text("hunger:" + Math.floor(chosenStat.hunger) + "\nthirst:" + Math.floor(chosenStat.thirst) + "\nmaturity:" + Math.floor(chosenStat.maturity) + "\nurge:" + Math.floor(chosenStat.urge) + "\nbehavior:" + chosenStat.behavior + "\nalive:" + chosenStat.alive + "\nname: " + chosenStat.name, 1275, 100);
+    text("speed:" + Math.round(chosenStat.speed*100)/100 + "\nhunger:" + Math.floor(chosenStat.hunger) + "\nthirst:" + Math.floor(chosenStat.thirst) + "\nmaturity:" + Math.floor(chosenStat.maturity) + "\nurge:" + Math.floor(chosenStat.urge) + "\nbehavior:" + chosenStat.behavior + "\nalive:" + chosenStat.alive + "\nname: " + chosenStat.name, 1275, 60);
 
     text("bunnies:" + bunnies.length + "\nfoxes:" + foxes.length + "\ntime:" + (Math.floor(frame/100)), 1275, 300);
 

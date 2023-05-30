@@ -1,4 +1,4 @@
-function Bunny(x, y, sprite, name, speed) {//CHANGE: ADDED SPEED PARAMETER
+function Bunny(x, y, sprite, name, speed) {
 
   this.r = 15;
 
@@ -8,7 +8,7 @@ function Bunny(x, y, sprite, name, speed) {//CHANGE: ADDED SPEED PARAMETER
   this.velX = 0;
   this.velY = 0;
 
-  this.speed = speed;//INITIALIZING SPEED PARAMETER
+  this.speed = speed;
   this.vision = 100;
 
   this.hunger = 0;
@@ -56,11 +56,6 @@ Bunny.prototype.findFood = function (carrots) {
   let distX = 0;
   let distY = 0;
   if (this.selectedFood >= 0) {
-
-    // fill(255, 0, 0);
-    // stroke(0);
-    // strokeWeight(1);
-    // ellipse(carrots[this.selectedFood].x, carrots[this.selectedFood].y, 30, 30);
 
     distX = carrots[this.selectedFood].x - this.x;
     distY = carrots[this.selectedFood].y - this.y;
@@ -182,7 +177,7 @@ Bunny.prototype.reproduce = function (bunnies) {
     this.hunger += 10;
     bunnies[this.selectedBunny].hunger += 10;
 
-    bunnies.push(new Bunny(this.x, this.y, this.sprite, this.name, ((this.speed + bunnies[this.selectedBunny].speed) / 2) * (Math.random() * .6 + .7))));//new bunny has speed that is .7 to 1.3 of the avg of its parents
+    bunnies.push(new Bunny(this.x, this.y, this.sprite, this.name, ((this.speed + bunnies[this.selectedBunny].speed) / 2) * (Math.random() * .6 + .7)));//new bunny has speed that is .7 to 1.3 of the avg of its parents
     this.behavior = -1;
   } else if (this.selectedBunny >= 0) {
     let theta = Math.atan2(distY, distX);
