@@ -305,7 +305,7 @@ Fox.prototype.act = function (bunnies, foxes, carrots, water) {
     this.maturity += 0.01;
 
 
-    if (this.hunger > 40) this.alive = false;
+    if (this.hunger > 20) this.alive = false;
     if (this.thirst > 20) this.alive = false;
 
 }
