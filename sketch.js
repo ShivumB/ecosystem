@@ -67,7 +67,7 @@ function setup() {
 
   if (bunnies == null) {
     bunnies = [];
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 100; i++) {
       //0.7 - 1.3
       bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], Math.random() * .6 + .7));
     }
