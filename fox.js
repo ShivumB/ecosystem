@@ -1,4 +1,4 @@
-function Fox(x, y, name, speed) {
+function Fox(x, y, name, speed, vision) {
 
     this.r = 15;
 
@@ -9,7 +9,7 @@ function Fox(x, y, name, speed) {
     this.velY = 0;
 
     this.speed = speed;
-    this.vision = 100;
+    this.vision = vision;
 
     this.hunger = 0;
     this.selectedFood = -1;
@@ -179,12 +179,14 @@ Fox.prototype.reproduce = function (foxes) {
         this.hunger += 5;
         foxes[this.selectedFox].hunger += 5;
 
-        let baseSpeed = (this.speed + foxes[this.selectedFox].speed)/2;
+        let baseSpeed = (Math.random() < 0.5)? this.speed: foxes[this.selectedFox].speed;
+        let baseVision = (Math.random() < 0.5)? this.vision: foxes[this.selectedFox].vision;
 
         //if random chance, then: anything from 0.5x to 2x
-        if(Math.random() < 0.7) baseSpeed *= (0.5 + Math.random()*1.5);
+        if(Math.random() < 0.5) baseSpeed *= (0.5 + Math.random()*1.5);
+        if(Math.random() < 0.5) baseVision *= (0.5 + Math.random()*1.5);
 
-        foxes.push(new Fox(this.x, this.y, this.name, baseSpeed));
+        foxes.push(new Fox(this.x, this.y, this.name, baseSpeed, baseVision));
         this.behavior = -1;
     } else if (this.selectedFox >= 0) {
         let theta = Math.atan2(distY, distX);
@@ -296,7 +298,7 @@ Fox.prototype.act = function (sprite, bunnies, foxes, carrots, water) {
     if (this.y < 0) this.y = 600;
     if (this.y > height) this.y = 0;
 
-    this.hunger += 0.01 + 0.01*this.speed;
+    this.hunger += 0.01*this.speed;
     this.thirst += 0.01;
 
     this.urge += 0.01;

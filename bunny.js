@@ -1,4 +1,4 @@
-function Bunny(x, y, name, speed) {
+function Bunny(x, y, name, speed, vision) {
 
   this.r = 15;
 
@@ -9,7 +9,7 @@ function Bunny(x, y, name, speed) {
   this.velY = 0;
 
   this.speed = speed;
-  this.vision = 100;
+  this.vision = vision;
 
   this.hunger = 0;
   this.selectedFood = -1;
@@ -168,18 +168,21 @@ Bunny.prototype.reproduce = function (bunnies) {
   }
 
   if (this.selectedBunny >= 0 && distX * distX + distY * distY < Math.pow(this.r + bunnies[this.selectedBunny].r, 2)) {
+    
     this.urge = 0;
     bunnies[this.selectedBunny].urge = 0;
 
     this.hunger += 5;
     bunnies[this.selectedBunny].hunger += 5;
 
-    let baseSpeed = (this.speed + bunnies[this.selectedBunny].speed)/2;
+    let baseSpeed = (Math.random() < 0.5)? this.speed: bunnies[this.selectedBunny].speed;
+    let baseVision = (Math.random() < 0.5)? this.vision: bunnies[this.selectedBunny].vision;
 
     //if random chance, then: anything from 0.5x to 2x
     if(Math.random() < 0.1) baseSpeed *= (0.5 + Math.random()*1.5);
+    if(Math.random() < 0.1) baseVision *= (0.5 + Math.random()*1.5);
 
-    bunnies.push(new Bunny(this.x, this.y, this.name, baseSpeed));//new bunny has speed that is .7 to 1.3 of the avg of its parents
+    bunnies.push(new Bunny(this.x, this.y, this.name, baseSpeed, baseVision));//new bunny has speed that is .7 to 1.3 of the avg of its parents
     this.behavior = -1;
   } else if (this.selectedBunny >= 0) {
     let theta = Math.atan2(distY, distX);
