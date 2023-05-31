@@ -168,7 +168,7 @@ mouseClicked = function () {
 
   } else {
 
-    if(mouseY > 200 & mouseY < 275) {
+    if(mouseY > 200 & mouseY < 240) {
       clearStorage();
       setup();
     }
@@ -200,12 +200,14 @@ function draw() {
   line(1200, 200, 1350, 200);
   noStroke();
   fill(0);
-  text("RESET", 1275, 245);
+  text("RESET", 1275, 225);
   stroke(0);
-  line(1200, 275, 1350, 275);
+  line(1200, 240, 1350, 240);
 
   let avgBunnySpeed = 0;
+  let topBunnySpeed = 0;
   let avgFoxSpeed = 0;
+  let topFoxSpeed = 0;
 
   for (let i = 0; i < carrots.length; i++) {
     carrots[i].act(spriteCarrot);
@@ -217,11 +219,13 @@ function draw() {
 
   for (let i = 0; i < bunnies.length; i++) {
     bunnies[i].act(spriteBunny, bunnies, foxes, carrots, water);
+    topBunnySpeed = max(topBunnySpeed, bunnies[i].speed);
     avgBunnySpeed += bunnies[i].speed;
   }
 
   for (let i = 0; i < foxes.length; i++) {
     foxes[i].act(spriteFox, bunnies, foxes, carrots, water);
+    topFoxSpeed = max(topFoxSpeed, foxes[i].speed);
     avgFoxSpeed += foxes[i].speed;
   }
 
@@ -271,7 +275,7 @@ function draw() {
     textAlign(CENTER);
     text("speed:" + Math.round(chosenStat.speed * 100) / 100 + "\nhunger:" + Math.floor(chosenStat.hunger) + "\nthirst:" + Math.floor(chosenStat.thirst) + "\nmaturity:" + Math.floor(chosenStat.maturity) + "\nurge:" + Math.floor(chosenStat.urge) + "\nbehavior:" + chosenStat.behavior + "\nalive:" + chosenStat.alive + "\nname: " + chosenStat.name, 1275, 20);
 
-    text("bunnies:" + bunnies.length + "\navg. speed:" + Math.round(100 * avgBunnySpeed / bunnies.length) / 100 + "\nfoxes:" + foxes.length + "\navg. speed:" + Math.round(100 * avgFoxSpeed / foxes.length) / 100 + "\ntime:" + (Math.floor(frame / 100)), 1275, 300);
+    text("bunnies:" + bunnies.length + "\navg. speed:" + Math.round(100 * avgBunnySpeed / bunnies.length) / 100 + "\ntop speed:" + Math.round(100 * topBunnySpeed) / 100 + "\nfoxes:" + foxes.length + "\navg. speed:" + Math.round(100 * avgFoxSpeed / foxes.length) / 100 + "\ntop speed:" + Math.round(100 * topFoxSpeed) / 100 + "\ntime:" + (Math.floor(frame / 100)), 1275, 258);
 
     stroke(0);
     strokeWeight(3);
