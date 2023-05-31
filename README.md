@@ -5,6 +5,7 @@ This is a simple ecosystem simulation, involving predator (Foxes) and prey (Rabb
 The demo is live at https://shivumb.github.io/ecosystem.
 - click on a rabbit/fox to view its datafields.
 - click the rabbit/fox icon at the bottom right corner to spawn a new rabbit/fox
+- each simulation is saved locally, so progress is never lost
 ## Environment
 * Javascript ES13
 * CSS3
