@@ -1,4 +1,5 @@
 # Ecosystem Simulation, Foxes and Rabbits
+Contributers: Shivum Banerjee and Alex Yang
 ## Overview
 This is a simple ecosystem simulation, involving predator (Foxes) and prey (Rabbits).
 The demo is live at https://shivumb.github.io/ecosystem.
