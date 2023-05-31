@@ -177,7 +177,7 @@ Bunny.prototype.reproduce = function (bunnies) {
     let baseSpeed = (this.speed + bunnies[this.selectedBunny].speed)/2;
 
     //if random chance, then: anything from 0.5x to 2x
-    if(Math.random() < 0.3) baseSpeed *= (0.5 + Math.random()*1.5);
+    if(Math.random() < 0.1) baseSpeed *= (0.5 + Math.random()*1.5);
 
     bunnies.push(new Bunny(this.x, this.y, this.name, baseSpeed));//new bunny has speed that is .7 to 1.3 of the avg of its parents
     this.behavior = -1;
