@@ -6,6 +6,10 @@ The demo is live at https://shivumb.github.io/ecosystem.
 - click on a rabbit/fox to view its datafields.
 - click the rabbit/fox icon at the bottom right corner to spawn a new rabbit/fox
 - each simulation is saved locally, so progress is never lost
+## Recent Updates
+- added nametags above all animals
+- added an average speed stat for bunnies and for foxes
+- added progress saving
 ## Environment
 * Javascript ES13
 * CSS3
