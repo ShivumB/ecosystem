@@ -334,11 +334,6 @@ function draw() {
     textSize(18);
     textAlign(CENTER);
 
-    if (chosenStat.alive) {
-      fill(0);
-    } else {
-      fill(255, 0, 0);
-    }
     text("speed:" + Math.round(chosenStat.speed * 100) / 100 + "\nvision:" + Math.round(chosenStat.vision * 100) / 100 + "\nhunger:" + Math.floor(chosenStat.hunger) + "\nthirst:" + Math.floor(chosenStat.thirst) + "\nmaturity:" + Math.floor(chosenStat.maturity) + "\nurge:" + Math.floor(chosenStat.urge) + "\nbehavior:" + chosenStat.behavior + "\nname: " + chosenStat.name, 1275, 20);
 
     fill(0);

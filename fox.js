@@ -158,7 +158,7 @@ Fox.prototype.reproduce = function (foxes) {
         distX = foxes[i].x - this.x;
         distY = foxes[i].y - this.y;
 
-        if (foxes[i].maturity > 20 && foxes[i].urge > 10 && distX * distX + distY * distY < Math.pow(this.vision + foxes[i].r, 2)) {
+        if (foxes[i].maturity > 15 && foxes[i].urge > 10 && distX * distX + distY * distY < Math.pow(this.vision + foxes[i].r, 2)) {
 
             if (distX * distX + distY * distY < minDist) {
                 minDist = distX * distX;
@@ -218,7 +218,7 @@ Fox.prototype.decideBehavior = function (foxes) {
             this.behavior = 1;
 
             //then, reproduce
-        } else if (this.maturity > 20 && this.urge > 10) {
+        } else if (this.maturity > 18 && this.urge > 10) {
             this.behavior = 2;
         }
 
