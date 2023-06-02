@@ -133,10 +133,8 @@ Fox.prototype.findWater = function (water) {
 Fox.prototype.explore = function () {
 
     if (this.frame == 10) {
-
-        this.velX += Math.random() * 2 - 1 + 0.001 * (width / 2 - this.x);
-        this.velY += Math.random() * 2 - 1 + 0.001 * (height / 2 - this.y);
-
+        this.velX += Math.random() * 2*this.speed - this.speed;
+        this.velY += Math.random() * 2*this.speed - this.speed;
     }
 
     this.frame++;
@@ -158,7 +156,7 @@ Fox.prototype.reproduce = function (foxes) {
         distX = foxes[i].x - this.x;
         distY = foxes[i].y - this.y;
 
-        if (foxes[i].maturity > 15 && foxes[i].urge > 10 && distX * distX + distY * distY < Math.pow(this.vision + foxes[i].r, 2)) {
+        if (foxes[i].maturity > 18 && foxes[i].urge > 10 && distX * distX + distY * distY < Math.pow(this.vision + foxes[i].r, 2)) {
 
             if (distX * distX + distY * distY < minDist) {
                 minDist = distX * distX;
@@ -182,9 +180,9 @@ Fox.prototype.reproduce = function (foxes) {
         let baseSpeed = (Math.random() < 0.5)? this.speed: foxes[this.selectedFox].speed;
         let baseVision = (Math.random() < 0.5)? this.vision: foxes[this.selectedFox].vision;
 
-        //if random chance, then: anything from 0.5x to 2x
-        if(Math.random() < 0.5) baseSpeed *= (0.5 + Math.random()*1.5);
-        if(Math.random() < 0.5) baseVision *= (0.5 + Math.random()*1.5);
+        //if random chance, then: anything from 0.8x to 1.2x
+        if(Math.random() < 0.45) baseSpeed *= (0.8 + Math.random()*1.2);
+        if(Math.random() < 0.45) baseVision *= (0.8 + Math.random()*1.2);
 
         foxes.push(new Fox(this.x, this.y, this.name, baseSpeed, baseVision));
         this.behavior = -1;
@@ -298,7 +296,7 @@ Fox.prototype.act = function (sprite, bunnies, foxes, carrots, water) {
     if (this.y < 0) this.y = 600;
     if (this.y > height) this.y = 0;
 
-    this.hunger += 0.01*this.speed;
+    this.hunger += 0.005 + 0.005*this.speed + 0.005*0.01*this.vision;
     this.thirst += 0.01;
 
     this.urge += 0.01;

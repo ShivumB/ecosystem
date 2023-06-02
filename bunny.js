@@ -1,4 +1,4 @@
-function Bunny(x, y, name, speed, vision) {
+function Bunny(x, y, name, speed, vision, spriteIndex) {
 
   this.r = 15;
 
@@ -28,6 +28,7 @@ function Bunny(x, y, name, speed, vision) {
   this.alive = true;
 
   this.name = name;
+  this.spriteIndex = spriteIndex;
 }
 
 Bunny.prototype.findFood = function (carrots) {
@@ -129,8 +130,8 @@ Bunny.prototype.explore = function () {
 
   if (this.frame == 10) {
 
-    this.velX += Math.random() * 2 - 1 + 0.001 * (width / 2 - this.x);
-    this.velY += Math.random() * 2 - 1 + 0.001 * (height / 2 - this.y);
+    this.velX += Math.random() * 2*this.speed - this.speed;
+    this.velY += Math.random() * 2*this.speed - this.speed;
 
   }
 
@@ -153,12 +154,15 @@ Bunny.prototype.reproduce = function (bunnies) {
     distX = bunnies[i].x - this.x;
     distY = bunnies[i].y - this.y;
 
-    if (bunnies[i].maturity > 10 && bunnies[i].urge > 2 && distX * distX + distY * distY < Math.pow(this.vision + bunnies[i].r, 2)) {
+    let mag = distX * distX + distY * distY;
+
+    if (bunnies[i].maturity > 5 && bunnies[i].urge > 3 && mag < Math.pow(this.vision + bunnies[i].r, 2)) {
 
       if (distX * distX + distY * distY < minDist) {
         minDist = distX * distX;
         this.selectedBunny = i;
       }
+
     }
   }
 
@@ -168,22 +172,28 @@ Bunny.prototype.reproduce = function (bunnies) {
   }
 
   if (this.selectedBunny >= 0 && distX * distX + distY * distY < Math.pow(this.r + bunnies[this.selectedBunny].r, 2)) {
-    
+
     this.urge = 0;
     bunnies[this.selectedBunny].urge = 0;
 
     this.hunger += 5;
     bunnies[this.selectedBunny].hunger += 5;
 
-    let baseSpeed = (Math.random() < 0.5)? this.speed: bunnies[this.selectedBunny].speed;
-    let baseVision = (Math.random() < 0.5)? this.vision: bunnies[this.selectedBunny].vision;
+    let baseSpeed = (Math.random() < 0.5) ? this.speed : bunnies[this.selectedBunny].speed;
+    let baseVision = (Math.random() < 0.5) ? this.vision : bunnies[this.selectedBunny].vision;
 
-    //if random chance, then: anything from 0.5x to 2x
-    if(Math.random() < 0.1) baseSpeed *= (0.5 + Math.random()*1.5);
-    if(Math.random() < 0.1) baseVision *= (0.5 + Math.random()*1.5);
+    //if random chance, then: anything from 0.99x to 1.01x
+    if(Math.random() < 0.03) baseSpeed *= (0.99 + Math.random()*1.01);
+    if(Math.random() < 0.03) baseVision *= (0.99 + Math.random()*1.01);
 
-    bunnies.push(new Bunny(this.x, this.y, this.name, baseSpeed, baseVision));//new bunny has speed that is .7 to 1.3 of the avg of its parents
+    //use name, sprite to keep track of lineage
+    bunnies.push(new Bunny(this.x, this.y, this.name, baseSpeed, baseVision, bunnies[this.selectedBunny].spriteIndex));
+
+    bunnies[this.selectedBunny].velX += 2;
+    bunnies[this.selectedBunny].velY += 2;
+
     this.behavior = -1;
+
   } else if (this.selectedBunny >= 0) {
     let theta = Math.atan2(distY, distX);
 
@@ -195,7 +205,6 @@ Bunny.prototype.reproduce = function (bunnies) {
     if (this.hunger > 10) this.behavior = 1;
     if (this.thirst > 10) this.behavior = 0;
   }
-
 }
 
 Bunny.prototype.flee = function (foxes) {
@@ -239,7 +248,7 @@ Bunny.prototype.decideBehavior = function (foxes) {
       this.behavior = 1;
 
       //then, reproduce
-    } else if (this.maturity > 10 && this.urge > 5) {
+    } else if (this.maturity > 5 && this.urge > 3) {
       this.behavior = 2;
     }
 
@@ -267,8 +276,31 @@ Bunny.prototype.decideBehavior = function (foxes) {
 
 }
 
-Bunny.prototype.act = function (sprite, bunnies, foxes, carrots, water) {
+Bunny.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
 
+  //BEFORE DOING ANYTHING, RUN COLLISIONS WITH BUNNIES
+  let distX = 0;
+  let distY = 0;
+  let theta = 0;
+
+  for(let i = 0; i < bunnies.length; i++) {
+    if(bunnies[i] != this) {
+
+      distX = bunnies[i].x - this.x;
+      distY = bunnies[i].y - this.y;
+
+      if(distX * distX + distY * distY < 2*this.r*2*this.r) {
+
+        theta = Math.atan2(distY, distX);
+        
+        this.velX -= this.speed*0.25*Math.cos(theta);
+        this.velY -= this.speed*0.25*Math.sin(theta);
+      }
+
+    }
+  }
+
+  //THEN, UPDATE BEHAVIOR
   this.decideBehavior(foxes);
 
   if (this.behavior == 0) {
@@ -287,24 +319,14 @@ Bunny.prototype.act = function (sprite, bunnies, foxes, carrots, water) {
   textSize(15);
   fill(0);
 
-  // text("hunger: " + (40 - Math.floor(this.hunger)) + "\nthirst:" + (20 - Math.floor(this.thirst)) + "\nmaturity:" + Math.floor(this.maturity) + "\nurge:" + Math.floor(this.urge), this.x, this.y - 75);
-
-  // stroke(0);
-  // strokeWeight(1);
-  // fill(255, 255, 0, 100);
-  // ellipse(this.x, this.y, this.vision * 2, this.vision * 2);
-
-  // fill(255, 255, 0);
-  // ellipse(this.x, this.y, 30, 30);
-
   textSize(12);
   textAlign(CENTER);
   text(this.name, this.x, this.y - 22);
 
-  image(sprite, this.x - 15, this.y - 19);
+  image(sprites[this.spriteIndex], this.x - 15, this.y - 19);
 
 
-  //RUN COLLISIONS
+  //RUN COLLISIONS WITH WATER
   for (let i = 0; i < water.length; i++) {
 
     let distX = this.x - water[i].x;
@@ -321,7 +343,6 @@ Bunny.prototype.act = function (sprite, bunnies, foxes, carrots, water) {
     }
   }
 
-  //UPDATE STATUS <- why are this.speed and the vel different.. 
   if (this.velY < -this.speed) this.velY = -this.speed;
   if (this.velY > this.speed) this.velY = this.speed;
   if (this.velX < -this.speed) this.velX = -this.speed;
@@ -335,7 +356,7 @@ Bunny.prototype.act = function (sprite, bunnies, foxes, carrots, water) {
   if (this.y < 0) this.y = 600;
   if (this.y > height) this.y = 0;
 
-  this.hunger += 0.01 + 0.01*this.speed;
+  this.hunger += 0.005 + 0.005 * this.speed + 0.005 * 0.01 * this.vision;
   this.thirst += 0.01;
 
   this.urge += 0.01;
@@ -344,5 +365,4 @@ Bunny.prototype.act = function (sprite, bunnies, foxes, carrots, water) {
 
   if (this.hunger > 20) this.alive = false;
   if (this.thirst > 20) this.alive = false;
-
 }

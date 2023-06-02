@@ -10,7 +10,7 @@ var iteration = 0;
 var grass;
 
 var spriteCarrot;
-var spriteBunny;
+var spriteBunnies;
 var spriteFox;
 var spriteWater;
 
@@ -26,7 +26,17 @@ var names;
 
 function setup() {
 
-  spriteBunny = loadImage("images/bunny.png");
+  spriteBunnies = [];
+  spriteBunnies.push(loadImage("images/bunny.png"));
+
+  //these look bad :(
+  //spriteBunnies.push(loadImage("images/bunny_bisexual.png"));
+  //spriteBunnies.push(loadImage("images/bunny_lesbian.png"));
+  spriteBunnies.push(loadImage("images/bunny_rainbow.png"));
+  spriteBunnies.push(loadImage("images/bunny_trans.png"));
+  spriteBunnies.push(loadImage("images/bunny_rainbow.png"));
+  spriteBunnies.push(loadImage("images/bunny_trans.png"));
+
   spriteFox = loadImage("images/red_fox.png");
   spriteWater = loadImage("images/water.png");
 
@@ -74,14 +84,29 @@ function setup() {
   if (bunnies == null) {
     bunnies = [];
     for (let i = 0; i < 100; i++) {
-      //0.7 - 1.3 speed
+
+      //give random sprite
+      let r = Math.random();
+
+      let spriteIndex = 0;
+
+      if (r < 0.6) spriteIndex = 0;
+      else if (r < 0.7) spriteIndex = 1;
+      else if (r < 0.8) spriteIndex = 2;
+      else if (r < 0.9) spriteIndex = 3;
+      else spriteIndex = 4;
+
+      //0.9 - 1.1 speed
       //90 - 110 vision
-      bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], Math.random() * .6 + .7, Math.random() * 20 + 90));
+
+      //for testing, fixing vision, speed
+      bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], 0.9 + 0.2*Math.random(), 120 + 20*Math.random(), spriteIndex));
     }
+
   } else {
     for (let i = 0; i < bunnies.length; i++) {
 
-      let temp = new Bunny(-10, -10, "temp", -10);
+      let temp = new Bunny(-10, -10, "temp", -10, -10);
       temp.r = bunnies[i].r;
       temp.x = bunnies[i].x;
       temp.y = bunnies[i].y;
@@ -105,6 +130,8 @@ function setup() {
       temp.selectedWater = bunnies[i].selectedWater;
       temp.selectedBunny = bunnies[i].selectedBunny;
 
+      temp.spriteIndex = bunnies[i].spriteIndex;
+
       bunnies[i] = temp;
     }
   }
@@ -113,9 +140,12 @@ function setup() {
   if (foxes == null) {
     foxes = [];
     for (let i = 0; i < 4; i++) {
-      //1.3 - 1.9 speed
+
+      //1.2 - 1.4 speed
       //90 - 110 vision
-      foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], 1.3 + Math.random() * .6, Math.random() * 20 + 90));
+
+      //for testing: fixed vision, speed
+      foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], 1.2 + 0.2*Math.random(), 90 + 20*Math.random()));
     }
   } else {
     for (let i = 0; i < foxes.length; i++) {
@@ -162,6 +192,8 @@ function setup() {
   select = 0;
   keys = [];
   keys[32] = false;
+
+  console.log(bunnies[0]);
 }
 
 keyPressed = function () {
@@ -210,9 +242,20 @@ function draw() {
 
   if (keys[32] && spawnFrame++ % 10 == 0) {
     if (select == 0) {
-      bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], Math.random() * .6 + .7, Math.random() * 20 + 90));
+
+      let r = Math.random();
+
+      let spriteIndex = 0;
+
+      if (r < 0.6) spriteIndex = 0;
+      else if (r < 0.7) spriteIndex = 1;
+      else if (r < 0.8) spriteIndex = 2;
+      else if (r < 0.9) spriteIndex = 3;
+      else spriteIndex = 4;
+
+      bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], 0.9 + 0.2*Math.random(), 120 + 20*Math.random(), spriteIndex));
     } else {
-      foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], 1.3 + Math.random() * .6, Math.random() * 20 + 90));
+      foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], 1.2 + 0.2*Math.random(), 90 + 20*Math.random()));
     }
   }
 
@@ -240,7 +283,7 @@ function draw() {
 
   stroke(0);
   line(1200, 500, 1350, 500);
-  image(spriteBunny, 1275 - 15, 540 - 19, 30 * 3 / 5, 38 * 3 / 5);
+  image(spriteBunnies[0], 1275 - 15, 540 - 19, 30 * 3 / 5, 38 * 3 / 5);
   line(1200, 550, 1350, 550);
   image(spriteFox, 1275 - 20, 590 - 20, 40 * 3 / 5, 40 * 3 / 5);
 
@@ -270,7 +313,7 @@ function draw() {
   }
 
   for (let i = 0; i < bunnies.length; i++) {
-    bunnies[i].act(spriteBunny, bunnies, foxes, carrots, water);
+    bunnies[i].act(spriteBunnies, bunnies, foxes, carrots, water);
     topBunnySpeed = max(topBunnySpeed, bunnies[i].speed);
     avgBunnySpeed += bunnies[i].speed;
 
@@ -310,7 +353,7 @@ function draw() {
   }
 
   //gen new carrots
-  if (frame % 500 && carrots.length < 1000) {
+  if (carrots.length < 1000) {
 
     let x = Math.random() * 1180 + 10;
     let y = Math.random() * 580 + 10;
