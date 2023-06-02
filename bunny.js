@@ -182,9 +182,9 @@ Bunny.prototype.reproduce = function (bunnies) {
     let baseSpeed = (Math.random() < 0.5) ? this.speed : bunnies[this.selectedBunny].speed;
     let baseVision = (Math.random() < 0.5) ? this.vision : bunnies[this.selectedBunny].vision;
 
-    //if random chance, then: anything from 0.95x to 1.05x
-    if(Math.random() < 0.1) baseSpeed *= (0.8 + Math.random()*0.4);
-    if(Math.random() < 0.1) baseVision *= (0.8 + Math.random()*0.4);
+    //if random chance, then: anything from 0.8x to 1.2x
+    if(Math.random() < 0.2) baseSpeed *= (0.8 + Math.random()*0.4);
+    if(Math.random() < 0.2) baseVision *= (0.8 + Math.random()*0.4);
 
     //use name, sprite to keep track of lineage
     bunnies.push(new Bunny(this.x, this.y, this.name, baseSpeed, baseVision, bunnies[this.selectedBunny].spriteIndex));
