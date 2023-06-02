@@ -181,8 +181,8 @@ Fox.prototype.reproduce = function (foxes) {
         let baseVision = (Math.random() < 0.5)? this.vision: foxes[this.selectedFox].vision;
 
         //if random chance, then: anything from 0.8x to 1.2x
-        if(Math.random() < 0.45) baseSpeed *= (0.8 + Math.random()*1.2);
-        if(Math.random() < 0.45) baseVision *= (0.8 + Math.random()*1.2);
+        if(Math.random() < 0.45) baseSpeed *= (0.8 + Math.random()*0.4);
+        if(Math.random() < 0.45) baseVision *= (0.8 + Math.random()*0.4);
 
         foxes.push(new Fox(this.x, this.y, this.name, baseSpeed, baseVision));
         this.behavior = -1;
