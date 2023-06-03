@@ -8,7 +8,7 @@
   these are global variables so that all bunnies share the same mutation characteristics
 */
 
-var foxDefaultSpeed = 1.3;
+var foxDefaultSpeed = 1.9;
 var foxSpeedMutation = [0.7, 0.8, 1.2];
 
 var foxDefaultSpeedCost = 0.005;
@@ -281,7 +281,7 @@ Fox.prototype.reproduce = function (foxes) {
             maturityThreshold, offspringReadiness,
             urgeThreshold, reproductionCost,
             this.name, foxes[this.selectedMate].spriteIndex);
-      
+
 
         this.behavior = -1;
 
@@ -400,26 +400,85 @@ Fox.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
 
 function addFoxToArray(arr, x, y, speed, speedCost, vision, visionCost, hungerCost, thirstCost, hungerFromFood, thirstFromWater, maturityThreshold, offspringReadiness, urgeThreshold, reproductionCost, name, spriteIndex) {
 
-    arr.push(new Fox(x, y, 
-  
-      (Math.random() < foxSpeedMutation[0])? speed*random(foxSpeedMutation[1], foxSpeedMutation[2]) : speed,
-      (Math.random() < foxSpeedCostMutation[0])? speedCost*random(foxSpeedCostMutation[1], foxSpeedCostMutation[2]) : speedCost,
-  
-      (Math.random() < foxVisionMutation[0])? vision*random(foxVisionMutation[1], foxVisionMutation[2]) : vision,
-      (Math.random() < foxVisionCostMutation[0])? visionCost*random(foxVisionCostMutation[1], foxVisionCostMutation[2]) : visionCost,
-  
-      (Math.random() < foxHungerCostMutation[0])? hungerCost*random(foxHungerCostMutation[1], foxHungerCostMutation[2]) : hungerCost,
-      (Math.random() < foxThirstCostMutation[0])? thirstCost*random(foxThirstCostMutation[1], foxThirstCostMutation[2]) : thirstCost,
-  
-      (Math.random() < foxHungerFromFoodMutation[0])? hungerFromFood*random(foxHungerFromFoodMutation[1], foxHungerFromFoodMutation[2]) : hungerFromFood,
-      (Math.random() < foxThirstFromWaterMutation[0])? thirstFromWater*random(foxThirstFromWaterMutation[1], foxThirstFromWaterMutation[2]) : thirstFromWater,
-  
-      (Math.random() < foxMaturityThresholdMutation[0])? maturityThreshold*random(foxMaturityThresholdMutation[1], foxMaturityThresholdMutation[2]) : maturityThreshold,
-      (Math.random() < foxOffspringReadinessMutation[0])? offspringReadiness*random(foxOffspringReadinessMutation[1], foxOffspringReadinessMutation[2]) : offspringReadiness,
-  
-      (Math.random() < foxUrgeThresholdMutation[0])? urgeThreshold*random(foxUrgeThresholdMutation[1], foxUrgeThresholdMutation[2]) : urgeThreshold,
-      (Math.random() < foxReproductionCostMutation[0])? reproductionCost*random(foxReproductionCostMutation[1], foxReproductionCostMutation[2]) : reproductionCost,
-  
-      name, spriteIndex));
-  
-  }
+    arr.push(new Fox(x, y,
+
+        (Math.random() < foxSpeedMutation[0]) ? speed * random(foxSpeedMutation[1], foxSpeedMutation[2]) : speed,
+        (Math.random() < foxSpeedCostMutation[0]) ? speedCost * random(foxSpeedCostMutation[1], foxSpeedCostMutation[2]) : speedCost,
+
+        (Math.random() < foxVisionMutation[0]) ? vision * random(foxVisionMutation[1], foxVisionMutation[2]) : vision,
+        (Math.random() < foxVisionCostMutation[0]) ? visionCost * random(foxVisionCostMutation[1], foxVisionCostMutation[2]) : visionCost,
+
+        (Math.random() < foxHungerCostMutation[0]) ? hungerCost * random(foxHungerCostMutation[1], foxHungerCostMutation[2]) : hungerCost,
+        (Math.random() < foxThirstCostMutation[0]) ? thirstCost * random(foxThirstCostMutation[1], foxThirstCostMutation[2]) : thirstCost,
+
+        (Math.random() < foxHungerFromFoodMutation[0]) ? hungerFromFood * random(foxHungerFromFoodMutation[1], foxHungerFromFoodMutation[2]) : hungerFromFood,
+        (Math.random() < foxThirstFromWaterMutation[0]) ? thirstFromWater * random(foxThirstFromWaterMutation[1], foxThirstFromWaterMutation[2]) : thirstFromWater,
+
+        (Math.random() < foxMaturityThresholdMutation[0]) ? maturityThreshold * random(foxMaturityThresholdMutation[1], foxMaturityThresholdMutation[2]) : maturityThreshold,
+        (Math.random() < foxOffspringReadinessMutation[0]) ? offspringReadiness * random(foxOffspringReadinessMutation[1], foxOffspringReadinessMutation[2]) : offspringReadiness,
+
+        (Math.random() < foxUrgeThresholdMutation[0]) ? urgeThreshold * random(foxUrgeThresholdMutation[1], foxUrgeThresholdMutation[2]) : urgeThreshold,
+        (Math.random() < foxReproductionCostMutation[0]) ? reproductionCost * random(foxReproductionCostMutation[1], foxReproductionCostMutation[2]) : reproductionCost,
+
+        name, spriteIndex));
+
+}
+
+function constructFoxFromStorage(storage) {
+
+    let temp = new Fox(random(10, 1190), random(10, 590),
+    foxDefaultSpeed, foxDefaultSpeedCost,
+    foxDefaultVision, foxDefaultVisionCost,
+    foxDefaultHungerCost, foxDefaultThirstCost,
+    foxDefaultHungerFromFood, foxDefaultThirstFromWater,
+    foxDefaultMaturityThreshold, foxDefaultOffspringReadiness,
+    foxDefaultUrgeThreshold, foxDefaultReproductionCost,
+    "bugged fox", 0);
+
+    //state variables
+    if(storage.r != null) temp.r = storage.r;
+
+    if(storage.x != null) temp.x = storage.x;
+    if(storage.y != null) temp.y = storage.y;
+
+    if(storage.velX != null) temp.velX = storage.velX;
+    if(storage.velY != null) temp.velY = storage.velY;
+    
+    if(storage.hunger != null) temp.hunger = storage.hunger;
+    if(storage.selectedFood != null) temp.selectedFood = storage.selectedFood;
+
+    if(storage.thirst != null) temp.thirst = storage.thirst;
+    if(storage.selectedWater != null) temp.selectedWater = storage.selectedWater;
+
+    if(storage.urge != null) temp.urge = storage.urge;
+    if(storage.maturity != null) temp.maturity = storage.maturity;
+    if(storage.selectedMate != null) temp.selectedMate = storage.selectedMate;
+
+    if(storage.behavior != null) temp.behavior = storage.behavior;
+    if(storage.frame != null) temp.frame = storage.frame;
+    if(storage.alive != null) temp.alive = storage.alive;
+
+    //inheritables
+    if(storage.speed != null) temp.speed = storage.speed;
+    if(storage.speedCost != null) temp.speedCost = storage.speedCost;
+
+    if(storage.vision != null) temp.vision = storage.vision;
+    if(storage.visionCost != null) temp.speed = storage.speed;
+
+    if(storage.hungerCost != null) temp.speedCost = storage.speedCost;
+    if(storage.thirstCost != null) temp.vision = storage.vision;
+
+    if(storage.hungerFromFood != null) temp.speed = storage.speed;
+    if(storage.thirstFromWater != null) temp.speedCost = storage.speedCost;
+
+    if(storage.maturityThreshold != null) temp.vision = storage.vision;
+    if(storage.offspringReadiness != null) temp.speed = storage.speed;
+
+    if(storage.urgeThreshold != null) temp.speedCost = storage.speedCost;
+    if(storage.reproductionCost != null) temp.vision = storage.vision;
+
+    if(storage.name != null) temp.name = storage.name;
+    if(storage.spriteIndex != null) temp.spriteIndex = storage.spriteIndex;
+
+    return temp;
+}

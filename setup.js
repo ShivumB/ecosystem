@@ -5,16 +5,19 @@ var water;
 
 var frame = 0;
 
+var keys;
+
 var grassSprite;
 var carrotSprite;
 var bunnySprites;
 var foxSprites;
 var waterSPrite;
 
-var chosenStat;
-
+//to spawn bunnies or foxes
 var selectedSpawnButton;
-var keys;
+
+//for stats
+var chosenStat;
 
 var avgBunnySpeed = 0;
 var topBunnySpeed = 0;
@@ -30,15 +33,18 @@ var topFoxVision = 0;
 //every 10 frames, if key, spawn
 var spawnFrame;
 
+//name list for bunnies + foxes
 var names;
+
+//frames per carrot spawn
+var carrotSpawnRate = 1;
+var carrotCap = 1000;
 
 function setup() {
 
     createCanvas(1350, 600);
 
     angleMode(DEGREES);
-
-    clearStorage();
 
     selectedSpawnButton = 0;
     keys = [];
@@ -70,7 +76,7 @@ function setup() {
 
     if (carrots == null) {
         carrots = [];
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < carrotCap; i++) {
             carrots.push(new Carrot(Math.random() * 1180 + 10, Math.random() * 580 + 10));
 
             for (let j = 0; j < water.length; j++) {
@@ -93,7 +99,6 @@ function setup() {
             temp.alive = carrots[i].alive;
 
             carrots[i] = temp;
-
         }
     }
 
@@ -113,6 +118,10 @@ function setup() {
 
         }
 
+    } else {
+        for(let i = 0; i < bunnies.length; i++) {
+            bunnies[i] = constructBunnyFromStorage(bunnies[i]);
+        }
     }
 
     foxes = getItem("FOXES");
@@ -128,6 +137,10 @@ function setup() {
                 foxDefaultMaturityThreshold, foxDefaultOffspringReadiness,
                 foxDefaultUrgeThreshold, foxDefaultReproductionCost,
                 names[Math.floor(random(0, names.length + 1))], Math.floor(random(0, foxSprites.length)));
+        }
+    } else {
+        for(let i = 0; i < foxes.length; i++) {
+            foxes[i] = constructFoxFromStorage(foxes[i]);
         }
     }
 

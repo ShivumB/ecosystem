@@ -44,13 +44,13 @@ function draw() {
     noStroke();
 
     text("speed:" + Math.round(chosenStat.speed * 100) / 100
-    + "\nvision:" + Math.round(chosenStat.vision * 100) / 100
-    + "\nhunger:" + Math.floor(chosenStat.hunger)
-    + "\nthirst:" + Math.floor(chosenStat.thirst)
-    + "\nmaturity:" + Math.floor(chosenStat.maturity)
-    + "\nurge:" + Math.floor(chosenStat.urge)
-    + "\nbehavior:" + chosenStat.behavior
-    + "\nname: " + chosenStat.name, 1275, 20);
+      + "\nvision:" + Math.round(chosenStat.vision * 100) / 100
+      + "\nhunger:" + Math.floor(chosenStat.hunger)
+      + "\nthirst:" + Math.floor(chosenStat.thirst)
+      + "\nmaturity:" + Math.floor(chosenStat.maturity)
+      + "\nurge:" + Math.floor(chosenStat.urge)
+      + "\nbehavior:" + chosenStat.behavior
+      + "\nname: " + chosenStat.name, 1275, 20);
 
     text("bunnies:" + bunnies.length
       + "\navg. speed:" + Math.round(100 * avgBunnySpeed / bunnies.length) / 100
@@ -129,7 +129,7 @@ function draw() {
   }
 
   //gen new carrots
-  if (carrots.length < 1000) {
+  if (carrots.length < carrotCap && frame % carrotSpawnRate == 0) {
 
     let x = Math.random() * 1180 + 10;
     let y = Math.random() * 580 + 10;
@@ -151,19 +151,26 @@ function draw() {
   if (keys[32] && spawnFrame++ % 10 == 0) {
     if (selectedSpawnButton == 0) {
 
-      let r = Math.random();
+      addBunnyToArray(bunnies, random(10, 1190), random(10, 590),
+        bunnyDefaultSpeed, bunnyDefaultSpeedCost,
+        bunnyDefaultVision, bunnyDefaultVisionCost,
+        bunnyDefaultHungerCost, bunnyDefaultThirstCost,
+        bunnyDefaultHungerFromFood, bunnyDefaultThirstFromWater,
+        bunnyDefaultMaturityThreshold, bunnyDefaultOffspringReadiness,
+        bunnyDefaultUrgeThreshold, bunnyDefaultReproductionCost,
+        names[Math.floor(random(0, names.length + 1))], Math.floor(random(0, bunnySprites.length)));
 
-      let spriteIndex = 0;
-
-      if (r < 0.6) spriteIndex = 0;
-      else if (r < 0.7) spriteIndex = 1;
-      else if (r < 0.8) spriteIndex = 2;
-      else if (r < 0.9) spriteIndex = 3;
-      else spriteIndex = 4;
-
-      bunnies.push(new Bunny(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], 0.9 + 0.2 * Math.random(), 120 + 20 * Math.random(), spriteIndex));
     } else {
-      foxes.push(new Fox(Math.random() * 1180 + 10, Math.random() * 580 + 10, names[Math.floor(Math.random() * names.length)], 1.2 + 0.2 * Math.random(), 90 + 20 * Math.random(), 0));
+
+      addFoxToArray(foxes, random(10, 1190), random(10, 590),
+      foxDefaultSpeed, foxDefaultSpeedCost,
+      foxDefaultVision, foxDefaultVisionCost,
+      foxDefaultHungerCost, foxDefaultThirstCost,
+      foxDefaultHungerFromFood, foxDefaultThirstFromWater,
+      foxDefaultMaturityThreshold, foxDefaultOffspringReadiness,
+      foxDefaultUrgeThreshold, foxDefaultReproductionCost,
+      names[Math.floor(random(0, names.length + 1))], Math.floor(random(0, foxSprites.length)));
+
     }
   }
 

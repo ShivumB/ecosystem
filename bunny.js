@@ -492,3 +492,62 @@ function addBunnyToArray(arr, x, y, speed, speedCost, vision, visionCost, hunger
     name, spriteIndex));
 
 }
+
+function constructBunnyFromStorage(storage) {
+
+  let temp = new Bunny(random(10, 1190), random(10, 590),
+  bunnyDefaultSpeed, bunnyDefaultSpeedCost,
+  bunnyDefaultVision, bunnyDefaultVisionCost,
+  bunnyDefaultHungerCost, bunnyDefaultThirstCost,
+  bunnyDefaultHungerFromFood, bunnyDefaultThirstFromWater,
+  bunnyDefaultMaturityThreshold, bunnyDefaultOffspringReadiness,
+  bunnyDefaultUrgeThreshold, bunnyDefaultReproductionCost,
+  "bugged bunny", 0);
+
+  //state variables
+  if(storage.r != null) temp.r = storage.r;
+
+  if(storage.x != null) temp.x = storage.x;
+  if(storage.y != null) temp.y = storage.y;
+
+  if(storage.velX != null) temp.velX = storage.velX;
+  if(storage.velY != null) temp.velY = storage.velY;
+  
+  if(storage.hunger != null) temp.hunger = storage.hunger;
+  if(storage.selectedFood != null) temp.selectedFood = storage.selectedFood;
+
+  if(storage.thirst != null) temp.thirst = storage.thirst;
+  if(storage.selectedWater != null) temp.selectedWater = storage.selectedWater;
+
+  if(storage.urge != null) temp.urge = storage.urge;
+  if(storage.maturity != null) temp.maturity = storage.maturity;
+  if(storage.selectedMate != null) temp.selectedMate = storage.selectedMate;
+
+  if(storage.behavior != null) temp.behavior = storage.behavior;
+  if(storage.frame != null) temp.frame = storage.frame;
+  if(storage.alive != null) temp.alive = storage.alive;
+
+  //inheritables
+  if(storage.speed != null) temp.speed = storage.speed;
+  if(storage.speedCost != null) temp.speedCost = storage.speedCost;
+
+  if(storage.vision != null) temp.vision = storage.vision;
+  if(storage.visionCost != null) temp.speed = storage.speed;
+
+  if(storage.hungerCost != null) temp.speedCost = storage.speedCost;
+  if(storage.thirstCost != null) temp.vision = storage.vision;
+
+  if(storage.hungerFromFood != null) temp.speed = storage.speed;
+  if(storage.thirstFromWater != null) temp.speedCost = storage.speedCost;
+
+  if(storage.maturityThreshold != null) temp.vision = storage.vision;
+  if(storage.offspringReadiness != null) temp.speed = storage.speed;
+
+  if(storage.urgeThreshold != null) temp.speedCost = storage.speedCost;
+  if(storage.reproductionCost != null) temp.vision = storage.vision;
+
+  if(storage.name != null) temp.name = storage.name;
+  if(storage.spriteIndex != null) temp.spriteIndex = storage.spriteIndex;
+
+  return temp;
+}
