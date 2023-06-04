@@ -368,7 +368,7 @@ Bunny.prototype.act = function (sprites, sim, bunnies, foxes, carrots, water) {
   noStroke();
   fill(0);
   textSize(12);
-  textAlign(CENTER);
+  textAlign(CENTER, BASELINE);
   text(this.name, this.x, this.y - 22);
 
   image(sprites[this.spriteIndex], this.x - 15, this.y - 19);

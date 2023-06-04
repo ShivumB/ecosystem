@@ -11,7 +11,7 @@ function draw() {
       strokeWeight(5);
       rect(275, 105, 800, 150, 50);
 
-      textAlign(CENTER);
+      textAlign(CENTER, BASELINE);
       fill(0);
       textSize(80);
       noStroke();
@@ -51,6 +51,8 @@ function draw() {
 
     case "create":
       titleSim.act();
+
+      background(0, 121);
 
       fill(255, 200);
       stroke(0);
@@ -309,8 +311,44 @@ function draw() {
         statsX += 0.3 * (1350 - statsX);
       }
 
-      //SPAWN CREATURES
 
+      //DRAW CHOSEN ANIMAL STATS
+      if(chosenStat != null) {
+        //circle animal
+        noFill();
+        stroke(0);
+        strokeWeight(3);
+        ellipse(chosenStat.x, chosenStat.y, 40, 40);
+
+        //background
+        fill(255, 200);
+        noStroke();
+        rect(0, 420, 170, 180);
+
+        textAlign(LEFT, BASELINE);
+        textSize(20);
+        noStroke();
+        fill(0);
+        text("name:", 20, 440);
+        text("hunger:", 20, 460);
+        text("thirst:", 20, 480);
+        text("maturity:", 20, 500);
+        text("urge:", 20, 520);
+        text("speed:", 20, 560);
+        text("vision:", 20, 580);
+
+        textAlign(RIGHT);
+        text(chosenStat.name, 150, 440);
+        text(Math.floor(chosenStat.hunger), 150, 460);
+        text(Math.floor(chosenStat.thirst), 150, 480);
+        text(Math.floor(chosenStat.maturity), 150, 500);
+        text(Math.floor(chosenStat.urge), 150, 520);
+        text(Math.round(chosenStat.speed * 100) / 100, 150, 560);
+        text(Math.round(chosenStat.vision * 100) / 100, 150, 580);
+      }
+
+
+      //SPAWN CREATURES
       if (showStats && keys[32]) {
 
         if (statsSelect == 0 && spawnFrame % 5 == 0) {
@@ -343,6 +381,8 @@ function draw() {
 
     case "settings":
       sim.act();
+
+      background(0, 121);
 
       fill(255, 200);
       stroke(0);

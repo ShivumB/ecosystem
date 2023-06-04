@@ -30,6 +30,9 @@ var bunnyIconSprite;
 var statsX = 1050;
 var statsLabels;
 
+//CHOSEN STATS
+var chosenStat;
+
 //SETTINGS
 var settingsSprite;
 var settingsTheta;
@@ -63,6 +66,8 @@ function setup() {
         "maturity thresh.:", "offspring readiness:",
         "reprod. urge thresh.:", "reprod. cost:"
     ];
+
+    chosenStat = null;
 
     settingsSprite = loadImage("images/settings.png");
     settingsTheta = 0;
@@ -281,10 +286,10 @@ mouseClicked = function () {
 
             if (mouseX > 340 && mouseX < 340 + 30 && mouseY > 510 && mouseY < 510 + 30) bunnyPage = (bunnyPage + 1) % 6;
             if (mouseX > 160 && mouseX < 160 + 30 && mouseY > 510 && mouseY < 510 + 30) bunnyPage = (bunnyPage + 6 - 1) % 6;
-            
+
             if (mouseX > 790 && mouseX < 790 + 30 && mouseY > 510 && mouseY < 510 + 30) foxPage = (foxPage + 1) % 6;
             if (mouseX > 610 && mouseX < 610 + 30 && mouseY > 510 && mouseY < 510 + 30) foxPage = (foxPage + 6 - 1) % 6;
-            
+
 
             if (mouseX > 950 && mouseX < 950 + 350 && mouseY > 500 && mouseY < 500 + 50) {
                 updateSimFromInputs(sim);
@@ -305,35 +310,68 @@ mouseClicked = function () {
 
 
         case "game":
+            //all the returns are here so that if you press a button, you don't accidentally click
+            //an animal. that's why they're not elsewhere.
+
             if (!showStats && mouseX > 1290 && mouseX < 1290 + 40 && mouseY > 20 && mouseY < 20 + 40) {
                 showStats = true;
+                return;
             }
 
+            //BUTTONS ON STATS PAGE
             if (showStats) {
                 if (mouseX > (statsX + 10) && mouseX < (statsX + 10) + 20 && mouseY > 10 && mouseY < 10 + 20) {
                     showStats = false;
+                    return;
                 }
+
                 if (mouseX > (statsX + 20) && mouseX < (statsX + 20) + 130 && mouseY > 450 && mouseY < 450 + 130) {
                     statsSelect = 0;
                     statsPage = 0;
+                    return;
                 }
                 if (mouseX > (statsX + 150) && mouseX < (statsX + 150) + 130 && mouseY > 450 && mouseY < 450 + 130) {
                     statsSelect = 1;
                     statsPage = 0;
+                    return;
                 }
+
                 if (mouseX > (statsX + 196) && mouseX < (statsX + 196) + 20 && mouseY > 322 && mouseY < 322 + 20) {
                     statsPage = (statsPage + 1) % 6;
+                    return;
                 }
                 if (mouseX > (statsX + 83) && mouseX < (statsX + 83) + 20 && mouseY > 322 && mouseY < 322 + 20) {
                     statsPage = (statsPage + 6 - 1) % 6;
+                    return;
                 }
             }
 
             if (mouseX > 20 && mouseX < 60 && mouseY > 20 && mouseY < 60) {
                 scene = "settings";
+                return;
             }
 
-            image(closeStatsSprite, statsX + 10, 10, 20, 20);
+            //CHOOSING AN ANIMAL
+            if (!showStats || (showStats && mouseX < 1050)) {
+
+                chosenStat = null;
+
+                for (let i = 0; i < sim.bunnies.length; i++) {
+                    if (mouseX > sim.bunnies[i].x - 20 && mouseX < sim.bunnies[i].x + 20
+                        && mouseY > sim.bunnies[i].y - 20 && mouseY < sim.bunnies[i].y + 20) {
+                        chosenStat = sim.bunnies[i];
+                        return;
+                    }
+                }
+                for (let i = 0; i < sim.foxes.length; i++) {
+                    if (mouseX > sim.foxes[i].x - 20 && mouseX < sim.foxes[i].x + 20
+                        && mouseY > sim.foxes[i].y - 20 && mouseY < sim.foxes[i].y + 20) {
+                        chosenStat = sim.foxes[i];
+                        return;
+                    }
+                }
+            }
+
             break;
 
         case "settings":
