@@ -251,8 +251,8 @@ function draw() {
       text(Math.floor(sim.frame / 100), statsX + 280, 100);
 
       let len = (statsSelect == 0) ? sim.bunnies.length : sim.foxes.length;
-
       text(len, statsX + 280, 120);
+
       if (len == 0) {
         text("NaN", statsX + 280, 160);
         text("NaN", statsX + 280, 180);
@@ -262,11 +262,11 @@ function draw() {
         text("NaN", statsX + 280, 260);
         text("NaN", statsX + 280, 280);
       } else {
-        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][0] / len), statsX + 280, 160);
+        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][0]), statsX + 280, 160);
         text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][1]), statsX + 280, 180);
         text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][2]), statsX + 280, 200);
 
-        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][0] / len), statsX + 280, 240);
+        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][0]), statsX + 280, 240);
         text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][1]), statsX + 280, 260);
         text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][2]), statsX + 280, 280);
       }
