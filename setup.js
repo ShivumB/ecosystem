@@ -113,29 +113,29 @@ function setup() {
     for (i = 0; i < 6; i++) {
         //VARIABLES, 1
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 0].position(385 + 450, 150);
+        foxInputs[i * 8 + 0].position(385 + 500, 245);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 1].position(385 + 450, 190);
+        foxInputs[i * 8 + 1].position(385 + 425, 285);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 2].position(300 + 450, 230);
+        foxInputs[i * 8 + 2].position(300 + 533, 321);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 3].position(385 + 450, 230);
+        foxInputs[i * 8 + 3].position(385 + 536, 321);
 
         //VARIABLES, 2
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 4].position(385 + 450, 350);
+        foxInputs[i * 8 + 4].position(385 + 500, 445);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 5].position(385 + 450, 390);
+        foxInputs[i * 8 + 5].position(385 + 425, 485);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 6].position(300 + 450, 430);
+        foxInputs[i * 8 + 6].position(300 + 533, 521);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 7].position(385 + 450, 430);
+        foxInputs[i * 8 + 7].position(385 + 536, 521);
     }
 
     for (let i = 0; i < foxInputs.length; i++) {
