@@ -297,8 +297,8 @@ Ecosystem.prototype.act = function () {
         this.stats[1][6][2] = Math.min(this.stats[1][6][2], this.foxes[i].hungerFromFood);
 
         this.stats[1][7][0] += this.foxes[i].thirstFromWater;
-        this.stats[1][7][1] = Math.max(this.stats[1][7][1], this.foxes[i].bunnyThirstFromWater);
-        this.stats[1][7][2] = Math.min(this.stats[1][7][2], this.foxes[i].bunnyThirstFromWater);
+        this.stats[1][7][1] = Math.max(this.stats[1][7][1], this.foxes[i].thirstFromWater);
+        this.stats[1][7][2] = Math.min(this.stats[1][7][2], this.foxes[i].thirstFromWater);
 
         this.stats[1][8][0] += this.foxes[i].maturityThreshold;
         this.stats[1][8][1] = Math.max(this.stats[1][8][1], this.foxes[i].maturityThreshold);
