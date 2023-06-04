@@ -81,29 +81,29 @@ function setup() {
 
         //VARIABLES, 1
         bunnyInputs.push(createInput());
-        bunnyInputs[i * 8 + 0].position(460, 245);
+        bunnyInputs[i * 8 + 0].position(385, 150);
 
         bunnyInputs.push(createInput());
-        bunnyInputs[i * 8 + 1].position(385, 285);
+        bunnyInputs[i * 8 + 1].position(385, 190);
 
         bunnyInputs.push(createInput());
-        bunnyInputs[i * 8 + 2].position(385, 321);
+        bunnyInputs[i * 8 + 2].position(300, 230);
 
         bunnyInputs.push(createInput());
-        bunnyInputs[i * 8 + 3].position(470, 321);
+        bunnyInputs[i * 8 + 3].position(385, 230);
 
         //VARIABLES, 2
         bunnyInputs.push(createInput());
-        bunnyInputs[i * 8 + 4].position(385, 445);
+        bunnyInputs[i * 8 + 4].position(385, 350);
 
         bunnyInputs.push(createInput());
-        bunnyInputs[i * 8 + 5].position(385, 485);
+        bunnyInputs[i * 8 + 5].position(385, 390);
 
         bunnyInputs.push(createInput());
-        bunnyInputs[i * 8 + 6].position(385, 521);
+        bunnyInputs[i * 8 + 6].position(300, 430);
 
         bunnyInputs.push(createInput());
-        bunnyInputs[i * 8 + 7].position(465, 521);
+        bunnyInputs[i * 8 + 7].position(385, 430);
     }
 
     for (let i = 0; i < bunnyInputs.length; i++) {
@@ -118,29 +118,29 @@ function setup() {
     for (i = 0; i < 6; i++) {
         //VARIABLES, 1
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 0].position(385 + 500, 245);
+        foxInputs[i * 8 + 0].position(385 + 450, 150);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 1].position(385 + 425, 285);
+        foxInputs[i * 8 + 1].position(385 + 450, 190);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 2].position(300 + 533, 321);
+        foxInputs[i * 8 + 2].position(300 + 450, 230);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 3].position(385 + 536, 321);
+        foxInputs[i * 8 + 3].position(385 + 450, 230);
 
         //VARIABLES, 2
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 4].position(385 + 500, 445);
+        foxInputs[i * 8 + 4].position(385 + 450, 350);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 5].position(385 + 425, 485);
+        foxInputs[i * 8 + 5].position(385 + 450, 390);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 6].position(300 + 533, 521);
+        foxInputs[i * 8 + 6].position(300 + 450, 430);
 
         foxInputs.push(createInput());
-        foxInputs[i * 8 + 7].position(385 + 536, 521);
+        foxInputs[i * 8 + 7].position(385 + 450, 430);
     }
 
     for (let i = 0; i < foxInputs.length; i++) {
@@ -160,13 +160,13 @@ function setup() {
 
     //carrot inputs
     carrotCapInput = createInput();
-    carrotCapInput.position(1320, 215);
+    carrotCapInput.position(1240, 120);
     carrotCapInput.attribute("type", "number");
     carrotCapInput.addClass("textbox");
     carrotCapInput.addClass("hidden");
 
     carrotSpawnRateInput = createInput();
-    carrotSpawnRateInput.position(1320, 255);
+    carrotSpawnRateInput.position(1240, 160);
     carrotSpawnRateInput.attribute("type", "number");
     carrotSpawnRateInput.addClass("textbox");
     carrotSpawnRateInput.addClass("hidden");

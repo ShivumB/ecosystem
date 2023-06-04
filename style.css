@@ -2,20 +2,24 @@ html,
 body {
   margin: 0;
   padding: 0;
+
+  overflow: hidden;
 }
 
 main {
-  height: 100vh;
-  width: 100vw;
   background-color: black;
   overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
 }
+
 canvas {
-  border: 3px solid black;
+  margin-left: 2px;
+  margin-top: 5px;
+
+  overflow: hidden;
+
+  background-color: black;
+
+  border: 5px solid black;
   border-radius: 5px;
 }
 
