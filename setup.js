@@ -30,6 +30,10 @@ var bunnyIconSprite;
 var statsX = 1050;
 var statsLabels;
 
+//SETTINGS
+var settingsSprite;
+var settingsTheta;
+
 //ADD BUNNY/FOX
 var spawnFrame;
 
@@ -59,6 +63,9 @@ function setup() {
         "maturity thresh.:", "offspring readiness:",
         "reprod. urge thresh.:", "reprod. cost:"
     ];
+
+    settingsSprite = loadImage("images/settings.png");
+    settingsTheta = 0;
 
     spawnFrame = 0;
 
@@ -272,21 +279,12 @@ mouseClicked = function () {
 
         case "create":
 
-            if (mouseX > 340 && mouseX < 340 + 30 && mouseY > 510 && mouseY < 510 + 30) {
-                bunnyPage = (bunnyPage + 1) % 6;
-            }
-
-            if (mouseX > 160 && mouseX < 160 + 30 && mouseY > 510 && mouseY < 510 + 30) {
-                bunnyPage = (bunnyPage + 6  - 1) % 6;
-            }
-
-            if (mouseX > 790 && mouseX < 790 + 30 && mouseY > 510 && mouseY < 510 + 30) {
-                foxPage = (foxPage + 1) % 6;
-            }
-
-            if (mouseX > 610 && mouseX < 610 + 30 && mouseY > 510 && mouseY < 510 + 30) {
-                foxPage = (foxPage + 6  - 1) % 6;
-            }
+            if (mouseX > 340 && mouseX < 340 + 30 && mouseY > 510 && mouseY < 510 + 30) bunnyPage = (bunnyPage + 1) % 6;
+            if (mouseX > 160 && mouseX < 160 + 30 && mouseY > 510 && mouseY < 510 + 30) bunnyPage = (bunnyPage + 6 - 1) % 6;
+            
+            if (mouseX > 790 && mouseX < 790 + 30 && mouseY > 510 && mouseY < 510 + 30) foxPage = (foxPage + 1) % 6;
+            if (mouseX > 610 && mouseX < 610 + 30 && mouseY > 510 && mouseY < 510 + 30) foxPage = (foxPage + 6 - 1) % 6;
+            
 
             if (mouseX > 950 && mouseX < 950 + 350 && mouseY > 500 && mouseY < 500 + 50) {
                 updateSimFromInputs(sim);
@@ -311,34 +309,53 @@ mouseClicked = function () {
                 showStats = true;
             }
 
-            if(showStats) {
-                if(mouseX > (statsX + 10) && mouseX < (statsX + 10) + 20 && mouseY > 10 && mouseY < 10 + 20) {
+            if (showStats) {
+                if (mouseX > (statsX + 10) && mouseX < (statsX + 10) + 20 && mouseY > 10 && mouseY < 10 + 20) {
                     showStats = false;
                 }
-
-                if(mouseX > (statsX + 20) && mouseX < (statsX + 20) + 130 && mouseY > 450 && mouseY < 450 + 130) {
+                if (mouseX > (statsX + 20) && mouseX < (statsX + 20) + 130 && mouseY > 450 && mouseY < 450 + 130) {
                     statsSelect = 0;
                     statsPage = 0;
                 }
-
-                if(mouseX > (statsX + 150) && mouseX < (statsX + 150) + 130 && mouseY > 450 && mouseY < 450 + 130) {
+                if (mouseX > (statsX + 150) && mouseX < (statsX + 150) + 130 && mouseY > 450 && mouseY < 450 + 130) {
                     statsSelect = 1;
                     statsPage = 0;
                 }
-
-                if(mouseX > (statsX + 196) && mouseX < (statsX + 196) + 20 && mouseY > 322 && mouseY < 322 + 20) {
+                if (mouseX > (statsX + 196) && mouseX < (statsX + 196) + 20 && mouseY > 322 && mouseY < 322 + 20) {
                     statsPage = (statsPage + 1) % 6;
                 }
-
-                if(mouseX > (statsX + 83) && mouseX < (statsX + 83) + 20 && mouseY > 322 && mouseY < 322 + 20) {
-                    statsPage = (statsPage + 6 -  1) % 6;
+                if (mouseX > (statsX + 83) && mouseX < (statsX + 83) + 20 && mouseY > 322 && mouseY < 322 + 20) {
+                    statsPage = (statsPage + 6 - 1) % 6;
                 }
             }
 
+            if (mouseX > 20 && mouseX < 60 && mouseY > 20 && mouseY < 60) {
+                scene = "settings";
+            }
 
             image(closeStatsSprite, statsX + 10, 10, 20, 20);
+            break;
 
+        case "settings":
+            if (mouseX > 340 && mouseX < 340 + 30 && mouseY > 510 && mouseY < 510 + 30) bunnyPage = (bunnyPage + 1) % 6;
+            if (mouseX > 160 && mouseX < 160 + 30 && mouseY > 510 && mouseY < 510 + 30) bunnyPage = (bunnyPage + 6 - 1) % 6;
 
+            if (mouseX > 790 && mouseX < 790 + 30 && mouseY > 510 && mouseY < 510 + 30) foxPage = (foxPage + 1) % 6;
+            if (mouseX > 610 && mouseX < 610 + 30 && mouseY > 510 && mouseY < 510 + 30) foxPage = (foxPage + 6 - 1) % 6;
+
+            if (mouseX > 950 && mouseX < 950 + 350 && mouseY > 500 && mouseY < 500 + 50) {
+                updateSimFromInputs(sim);
+
+                for (let i = 0; i < bunnyInputs.length; i++) {
+                    bunnyInputs[i].addClass("hidden");
+                    foxInputs[i].addClass("hidden");
+
+                    carrotCapInput.addClass("hidden");
+                    carrotSpawnRateInput.addClass("hidden");
+                }
+
+                scene = "game";
+            }
             break;
     }
 }
@@ -393,11 +410,11 @@ function updateSimFromInputs(sim) {
 
 function formatScientific(num) {
 
-    if(num == 0) return 0;
+    if (num == 0) return 0;
 
-    if(num < 0.01) {
+    if (num < 0.01) {
         return Number(num).toExponential(3);
-    } 
+    }
 
     return Math.round(100 * num) / 100;
 }
