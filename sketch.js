@@ -253,19 +253,27 @@ function draw() {
       let len = (statsSelect == 0) ? sim.bunnies.length : sim.foxes.length;
 
       text(len, statsX + 280, 120);
+      if (len == 0) {
+        text("NaN", statsX + 280, 160);
+        text("NaN", statsX + 280, 180);
+        text("NaN", statsX + 280, 200);
 
+        text("NaN", statsX + 280, 240);
+        text("NaN", statsX + 280, 260);
+        text("NaN", statsX + 280, 280);
+      } else {
+        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][0] / len), statsX + 280, 160);
+        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][1]), statsX + 280, 180);
+        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][2]), statsX + 280, 200);
 
-      text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][0] / len), statsX + 280, 160);
-      text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][1]), statsX + 280, 180);
-      text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 0][2]), statsX + 280, 200);
-
-      text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][0] / len), statsX + 280, 240);
-      text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][1]), statsX + 280, 260);
-      text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][2]), statsX + 280, 280);
+        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][0] / len), statsX + 280, 240);
+        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][1]), statsX + 280, 260);
+        text(formatScientific(sim.stats[statsSelect][statsPage * 2 + 1][2]), statsX + 280, 280);
+      }
 
       textAlign(CENTER, CENTER);
       text("press or hold 'SPACE'", statsX + 150, 390);
-      text("to spawn " + ((statsSelect == 0)? "bunny" : "fox"), statsX + 150, 410);
+      text("to spawn " + ((statsSelect == 0) ? "bunny" : "fox"), statsX + 150, 410);
 
       //STATS PAGE
       textAlign(CENTER, TOP);
