@@ -16,7 +16,7 @@ function Ecosystem() {
 
     this.frame = 0;
 
-    this.names = ["Abigal M", "Ahmed A", "Alex Y", "Andy S", "Claire M", "Claire S", "Diego T", "Dilan R", "Elisa J", "Ella F", "Emerson B", "Griffin T", "Hali D", "Hemza D", "Iliana G", "Ivy Q", "Jack P", "Jenna J", "Jenna N", "Jenna Z", "Kamran R", "Karina P", "Kimberly K", "Kiran G", "Laura S", "Lillian B", "Maddy B", "Marya H", "Neil K", "Nina T", "Noora H", "Prachi S", "Rianna A", "Rishab S", "Samiksha G", "Samita U", "Sarah G", "Shahaan S", "Sarah G", "Shivum B", "Sophia B", "Varun K", "Will R", "Zoe F"];
+    this.names = ["Abigal M", "Ahmed A", "Alex Y", "Andy S", "Claire M", "Claire S", "Diego T", "Dilan R", "Elisa J", "Ella F", "Emerson B", "Griffin T", "Hali D", "Hemza D", "Iliana G", "Ivy Q", "Jack P", "Jenna J", "Jenna N", "Jenna Z", "Kamran R", "Karina P", "Kimberly K", "Kiran G", "Laura S", "Lillian B", "Maddie B", "Marya H", "Neil K", "Nina T", "Noora H", "Prachi S", "Rianna A", "Rishab S", "Samiksha G", "Samita U", "Sarah G", "Shahaan S", "Sarah G", "Shivum B", "Sophia B", "Varun K", "Will R", "Zoe F"];
 
     this.water = [];
 
@@ -72,6 +72,27 @@ function Ecosystem() {
 
     this.foxUrgeThreshold = [10, 0, 1, 1];
     this.foxReproductionCost = [5, 0, 1, 1];
+
+    /*
+        stat variable
+        
+        stats[0] = bunnies, stats[1] = foxes
+        
+        stats[...][X][...] = chosen trait is X (in the order that traits are listed above)
+
+        stats[...][...][0] = avg
+        stats[...][...][1] = max
+        stats[...][...][2] = min
+
+    */
+    this.stats = [];
+    this.stats[0] = [];
+    this.stats[1] = [];
+    for (let i = 0; i < 12; i++) {
+        this.stats[0][i] = [0, 0, 0];
+        this.stats[1][i] = [0, 0, 0];
+
+    }
 }
 
 Ecosystem.prototype.populate = function (water, carrotPop, bunnyPop, foxPop) {
@@ -81,7 +102,7 @@ Ecosystem.prototype.populate = function (water, carrotPop, bunnyPop, foxPop) {
     this.bunnies = [];
     this.foxes = [];
 
-    
+
     for (let i = 0; i < water.length; i++) {
         this.water.push(new Water(water[i][0], water[i][1], water[i][2]));
     }
@@ -138,7 +159,6 @@ Ecosystem.prototype.act = function () {
     image(grassSprite, 0, 0);
     image(grassSprite, 1200, 0);
 
-
     for (let i = 0; i < this.carrots.length; i++) {
         this.carrots[i].act(carrotSprite);
     }
@@ -188,6 +208,115 @@ Ecosystem.prototype.act = function () {
         }
 
         if (passed) this.carrots.push(new Carrot(tempX, tempY));;
+    }
+
+    //get stats
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 12; j++) {
+            this.stats[i][j][0] = 0;
+            this.stats[i][j][1] = -1000000;
+            this.stats[i][j][2] = 1000000;
+        }
+    }
+
+    for (let i = 0; i < this.bunnies.length; i++) {
+        this.stats[0][0][0] += this.bunnies[i].speed;
+        this.stats[0][0][1] = Math.max(this.stats[0][0][1], this.bunnies[i].speed);
+        this.stats[0][0][2] = Math.min(this.stats[0][0][2], this.bunnies[i].speed);
+
+        this.stats[0][1][0] += this.bunnies[i].speedCost;
+        this.stats[0][1][1] = Math.max(this.stats[0][1][1], this.bunnies[i].speedCost);
+        this.stats[0][1][2] = Math.min(this.stats[0][1][2], this.bunnies[i].speedCost);
+
+        this.stats[0][2][0] += this.bunnies[i].vision;
+        this.stats[0][2][1] = Math.max(this.stats[0][2][1], this.bunnies[i].vision);
+        this.stats[0][2][2] = Math.min(this.stats[0][2][2], this.bunnies[i].vision);
+
+        this.stats[0][3][0] += this.bunnies[i].visionCost;
+        this.stats[0][3][1] = Math.max(this.stats[0][3][1], this.bunnies[i].visionCost);
+        this.stats[0][3][2] = Math.min(this.stats[0][3][2], this.bunnies[i].visionCost);
+
+        this.stats[0][4][0] += this.bunnies[i].hungerCost;
+        this.stats[0][4][1] = Math.max(this.stats[0][4][1], this.bunnies[i].hungerCost);
+        this.stats[0][4][2] = Math.min(this.stats[0][4][2], this.bunnies[i].hungerCost);
+
+        this.stats[0][5][0] += this.bunnies[i].thirstCost;
+        this.stats[0][5][1] = Math.max(this.stats[0][5][1], this.bunnies[i].thirstCost);
+        this.stats[0][5][2] = Math.min(this.stats[0][5][2], this.bunnies[i].thirstCost);
+
+        this.stats[0][6][0] += this.bunnies[i].hungerFromFood;
+        this.stats[0][6][1] = Math.max(this.stats[0][6][1], this.bunnies[i].hungerFromFood);
+        this.stats[0][6][2] = Math.min(this.stats[0][6][2], this.bunnies[i].hungerFromFood);
+
+        this.stats[0][7][0] += this.bunnies[i].thirstFromWater;
+        this.stats[0][7][1] = Math.max(this.stats[0][7][1], this.bunnies[i].thirstFromWater);
+        this.stats[0][7][2] = Math.min(this.stats[0][7][2], this.bunnies[i].thirstFromWater);
+
+        this.stats[0][8][0] += this.bunnies[i].maturityThreshold;
+        this.stats[0][8][1] = Math.max(this.stats[0][8][1], this.bunnies[i].maturityThreshold);
+        this.stats[0][8][2] = Math.min(this.stats[0][8][2], this.bunnies[i].maturityThreshold);
+
+        this.stats[0][9][0] += this.bunnies[i].offspringReadiness;
+        this.stats[0][9][1] = Math.max(this.stats[0][9][1], this.bunnies[i].offspringReadiness);
+        this.stats[0][9][2] = Math.min(this.stats[0][9][2], this.bunnies[i].offspringReadiness);
+
+        this.stats[0][10][0] += this.bunnies[i].urgeThreshold;
+        this.stats[0][10][1] = Math.max(this.stats[0][10][1], this.bunnies[i].urgeThreshold);
+        this.stats[0][10][2] = Math.min(this.stats[0][10][2], this.bunnies[i].urgeThreshold);
+
+        this.stats[0][11][0] += this.bunnies[i].reproductionCost;
+        this.stats[0][11][1] = Math.max(this.stats[0][11][1], this.bunnies[i].reproductionCost);
+        this.stats[0][11][2] = Math.min(this.stats[0][11][2], this.bunnies[i].reproductionCost);
+    }
+
+    for (let i = 0; i < this.foxes.length; i++) {
+        this.stats[1][0][0] += this.foxes[i].speed;
+        this.stats[1][0][1] = Math.max(this.stats[0][0][1], this.foxes[i].speed);
+        this.stats[1][0][2] = Math.min(this.stats[0][0][2], this.foxes[i].speed);
+
+        this.stats[1][1][0] += this.foxes[i].speedCost;
+        this.stats[1][1][1] = Math.max(this.stats[0][1][1], this.foxes[i].speedCost);
+        this.stats[1][1][2] = Math.min(this.stats[0][1][2], this.foxes[i].speedCost);
+
+        this.stats[1][2][0] += this.foxes[i].vision;
+        this.stats[1][2][1] = Math.max(this.stats[0][2][1], this.foxes[i].vision);
+        this.stats[1][2][2] = Math.min(this.stats[0][2][2], this.foxes[i].vision);
+
+        this.stats[1][3][0] += this.foxes[i].visionCost;
+        this.stats[1][3][1] = Math.max(this.stats[0][3][1], this.foxes[i].visionCost);
+        this.stats[1][3][2] = Math.min(this.stats[0][3][2], this.foxes[i].visionCost);
+
+        this.stats[1][4][0] += this.foxes[i].hungerCost;
+        this.stats[1][4][1] = Math.max(this.stats[0][4][1], this.foxes[i].hungerCost);
+        this.stats[1][4][2] = Math.min(this.stats[0][4][2], this.foxes[i].hungerCost);
+
+        this.stats[1][5][0] += this.foxes[i].thirstCost;
+        this.stats[1][5][1] = Math.max(this.stats[0][5][1], this.foxes[i].thirstCost);
+        this.stats[1][5][2] = Math.min(this.stats[0][5][2], this.foxes[i].thirstCost);
+
+        this.stats[1][6][0] += this.foxes[i].hungerFromFood;
+        this.stats[1][6][1] = Math.max(this.stats[0][6][1], this.foxes[i].hungerFromFood);
+        this.stats[1][6][2] = Math.min(this.stats[0][6][2], this.foxes[i].hungerFromFood);
+
+        this.stats[1][7][0] += this.foxes[i].thirstFromWater;
+        this.stats[1][7][1] = Math.max(this.stats[0][7][1], this.foxes[i].bunnyThirstFromWater);
+        this.stats[1][7][2] = Math.min(this.stats[0][7][2], this.foxes[i].bunnyThirstFromWater);
+
+        this.stats[1][8][0] += this.foxes[i].maturityThreshold;
+        this.stats[1][8][1] = Math.max(this.stats[0][8][1], this.foxes[i].maturityThreshold);
+        this.stats[1][8][2] = Math.min(this.stats[0][8][2], this.foxes[i].maturityThreshold);
+
+        this.stats[1][9][0] += this.foxes[i].offspringReadiness;
+        this.stats[1][9][1] = Math.max(this.stats[0][9][1], this.foxes[i].offspringReadiness);
+        this.stats[1][9][2] = Math.min(this.stats[0][9][2], this.foxes[i].offspringReadiness);
+
+        this.stats[1][10][0] += this.foxes[i].urgeThreshold;
+        this.stats[1][10][1] = Math.max(this.stats[0][10][1], this.foxes[i].urgeThreshold);
+        this.stats[1][10][2] = Math.min(this.stats[0][10][2], this.foxes[i].urgeThreshold);
+
+        this.stats[1][11][0] += this.foxes[i].reproductionCost;
+        this.stats[1][11][1] = Math.max(this.stats[0][11][1], this.foxes[i].reproductionCost);
+        this.stats[1][11][2] = Math.min(this.stats[0][11][2], this.foxes[i].reproductionCost);
     }
 
     this.frame++;
