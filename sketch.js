@@ -1,186 +1,187 @@
 function draw() {
 
-  background(100, 100, 255);
+  switch (scene) {
+    case "title":
 
-  //background
-  image(grassSprite, 0, 0);
+      titleSim.act();
 
-  //buttons
-  fill(255, 255, 0);
-  noStroke();
-  if (selectedSpawnButton == 0) {
-    rect(1200, 500, 150, 50);
-    fill(0);
-    textSize(12);
-    text("Press or Hold \'SPACE\'", 1275, 520);
-  } else {
-    rect(1200, 550, 150, 50);
-    fill(0);
-    textSize(12);
-    text("Press or Hold \'SPACE\'", 1275, 570);
-  }
+      //title
+      fill(255, 200);
+      stroke(0);
+      strokeWeight(5);
+      rect(275, 105, 800, 150, 50);
 
-  //animal pictures on buttons
-  stroke(0);
-  strokeWeight(3);
-  line(1200, 500, 1350, 500);
-  image(bunnySprites[0], 1275 - 15, 540 - 19, 30 * 3 / 5, 38 * 3 / 5);
-  line(1200, 550, 1350, 550);
-  image(foxSprites[0], 1275 - 20, 590 - 20, 40 * 3 / 5, 40 * 3 / 5);
+      textAlign(CENTER);
+      fill(0);
+      textSize(80);
+      noStroke();
+      text("bunny & fox ecosystem", 1350 / 2, 200);
 
-  //reset button
-  line(1200, 200, 1350, 200);
-  noStroke();
-  fill(0);
-  text("click here to RESET", 1275, 225);
-  stroke(0);
-  line(1200, 240, 1350, 240);
-
-  //show stats
-  if (chosenStat != null) {
-    textSize(18);
-    textAlign(CENTER);
-    fill(0);
-    noStroke();
-
-    text("speed:" + Math.round(chosenStat.speed * 100) / 100
-      + "\nvision:" + Math.round(chosenStat.vision * 100) / 100
-      + "\nhunger:" + Math.floor(chosenStat.hunger)
-      + "\nthirst:" + Math.floor(chosenStat.thirst)
-      + "\nmaturity:" + Math.floor(chosenStat.maturity)
-      + "\nurge:" + Math.floor(chosenStat.urge)
-      + "\nbehavior:" + chosenStat.behavior
-      + "\nname: " + chosenStat.name, 1275, 20);
-
-    text("bunnies:" + bunnies.length
-      + "\navg. speed:" + Math.round(100 * avgBunnySpeed / bunnies.length) / 100
-      + "\ntop speed:" + Math.round(100 * topBunnySpeed) / 100
-      + "\navg. vision:" + Math.round(100 * avgBunnyVision / bunnies.length) / 100
-      + "\ntop vision:" + Math.round(100 * topBunnyVision) / 100
-      + "\nfoxes:" + foxes.length
-      + "\navg. speed:" + Math.round(100 * avgFoxSpeed / foxes.length) / 100
-      + "\ntop speed:" + Math.round(100 * topFoxSpeed) / 100
-      + "\navg.vision:" + Math.round(100 * avgFoxVision / foxes.length) / 100
-      + "\ntop vision:" + Math.round(100 * topFoxVision) / 100
-      + "\ntime:" + (Math.floor(frame / 100)), 1275, 258);
-
-    stroke(0);
-    strokeWeight(3);
-    noFill();
-    ellipse(chosenStat.x, chosenStat.y, 40, 40);
-  }
-
-  //Main drawing
-  avgBunnySpeed = 0;
-  topBunnySpeed = 0;
-  avgBunnyVision = 0;
-  topBunnyVision = 0;
-
-  avgFoxSpeed = 0;
-  topFoxSpeed = 0;
-  avgFoxVision = 0;
-  topFoxVision = 0;
-
-  for (let i = 0; i < carrots.length; i++) {
-    carrots[i].act(carrotSprite);
-  }
-
-  for (let i = 0; i < water.length; i++) {
-    water[i].act(waterSprite);
-  }
-
-  for (let i = 0; i < bunnies.length; i++) {
-    bunnies[i].act(bunnySprites, bunnies, foxes, carrots, water);
-    topBunnySpeed = max(topBunnySpeed, bunnies[i].speed);
-    avgBunnySpeed += bunnies[i].speed;
-
-    topBunnyVision = max(topBunnyVision, bunnies[i].vision);
-    avgBunnyVision += bunnies[i].vision;
-  }
-
-  for (let i = 0; i < foxes.length; i++) {
-    foxes[i].act(foxSprites, bunnies, foxes, carrots, water);
-    topFoxSpeed = max(topFoxSpeed, foxes[i].speed);
-    avgFoxSpeed += foxes[i].speed;
-
-    topFoxVision = max(topFoxVision, foxes[i].vision);
-    avgFoxVision += foxes[i].vision;
-  }
-
-  //delete elements
-  for (let i = carrots.length - 1; i >= 0; i--) {
-    if (!carrots[i].alive) carrots.splice(i, 1);
-  }
-
-  for (let i = bunnies.length - 1; i >= 0; i--) {
-    if (!bunnies[i].alive) {
-      avgBunnySpeed -= bunnies[i].speed;
-      avgBunnyVision -= bunnies[i].vision;
-      bunnies.splice(i, 1);
-    }
-  }
-
-  for (let i = foxes.length - 1; i >= 0; i--) {
-    if (!foxes[i].alive) {
-      avgFoxSpeed -= foxes[i].speed;
-      avgFoxVision -= foxes[i].vision;
-      foxes.splice(i, 1);
-    }
-  }
-
-  //gen new carrots
-  if (carrots.length < carrotCap && frame % carrotSpawnRate == 0) {
-
-    let x = Math.random() * 1180 + 10;
-    let y = Math.random() * 580 + 10;
-
-    let passed = true;
-    for (let i = 0; i < water.length; i++) {
-      let distX = x - water[i].x;
-      let distY = y - water[i].y;
-
-      if (distX * distX + distY * distY < Math.pow(15 + water[i].r, 2)) {
-        passed = false;
+      //new sim button
+      if (mouseX > 475 && mouseX < 475 + 400 && mouseY > 300 && mouseY < 300 + 75) {
+        fill(180, 200);
+      } else {
+        fill(255, 200);
       }
-    }
+      stroke(0);
+      strokeWeight(5);
+      rect(475, 300, 400, 75, 50);
 
-    if (passed) carrots.push(new Carrot(x, y));;
+      fill(0);
+      textSize(40);
+      noStroke();
+      text("new simulation", 1350 / 2, 350);
+
+      //continue last sim button
+      if (mouseX > 475 && mouseX < 475 + 400 && mouseY > 400 && mouseY < 400 + 75) {
+        fill(180, 200);
+      } else {
+        fill(255, 200);
+      }
+      stroke(0);
+      strokeWeight(5);
+      rect(475, 400, 400, 75, 50);
+
+      fill(0);
+      textSize(40);
+      noStroke();
+      text("load last simulation", 1350 / 2, 450);
+
+      break;
+
+    case "create":
+      titleSim.act();
+
+      fill(255, 200);
+      stroke(0);
+      strokeWeight(5);
+
+      //bunny
+      rect(100, 50, 350, 500, 50);
+
+      //foxes
+      rect(550, 50, 350, 500, 50);
+
+      //carrots
+      rect(950, 50, 350, 150, 50);
+
+      //water
+      rect(950, 250, 350, 200, 50);
+
+      //start
+      if(mouseX > 950 && mouseX < 950 + 350 && mouseY > 500 && mouseY < 500 + 50) fill(0, 255, 0, 151);
+      else fill(0, 255, 0, 100);
+      rect(950, 500, 350, 50, 30);
+
+      //all text
+      fill(0);
+      noStroke();
+
+      //headers
+      textSize(40);
+      textAlign(CENTER, CENTER);
+      text("bunny settings", 100 + 350 / 2, 80);
+      text("fox settings", 550 + 350 / 2, 80);
+      text("carrot settings", 950 + 350 / 2, 80);
+      text("water settings", 950 + 350 / 2, 280);
+      text("start simulation", 950 + 350 / 2, 517);
+
+      //inputs
+      //HIDE ALL INPUTS, EXCEPT RELEVANT ONES
+      for (let i = 0; i < bunnyInputs.length; i++) {
+        if (i >= bunnyPage * 8 && i < (bunnyPage + 1) * 8) {
+          bunnyInputs[i].removeClass("hidden");
+        } else {
+          bunnyInputs[i].addClass("hidden");
+        }
+      }
+
+      for (let i = 0; i < foxInputs.length; i++) {
+        if (i >= foxPage * 8 && i < (foxPage + 1) * 8) {
+          foxInputs[i].removeClass("hidden");
+        } else {
+          foxInputs[i].addClass("hidden");
+        }
+      }
+      carrotCapInput.removeClass("hidden");
+      carrotSpawnRateInput.removeClass("hidden");
+
+      //bunny inputs 1
+      textAlign(LEFT, CENTER);
+      textSize(20);
+      text(inputLabels[bunnyPage * 2 + 0], 120, 150);
+      text("mutation chance:", 120, 190);
+      text("mutation variability:      x to       x", 120, 230);
+
+
+      //bunny inputs 2
+      text(inputLabels[bunnyPage * 2 + 1], 120, 350);
+      text("mutation chance:", 120, 390);
+      text("mutation variability:      x to       x", 120, 430);
+
+      //fox inputs 1
+      text(inputLabels[foxPage * 2 + 0], 120 + 450, 150);
+      text("mutation chance:", 120 + 450, 190);
+      text("mutation variability:      x to       x", 120 + 450, 230);
+
+      //fox inputs 2
+      text(inputLabels[foxPage * 2 + 1], 120 + 450, 350);
+      text("mutation chance:", 120 + 450, 390);
+      text("mutation variability:      x to       x", 120 + 450, 430);
+
+
+      //carrot inputs
+      text("maximum number of carrots:", 980, 125);
+      text("frames between carrot spawns:", 980, 160);
+
+      //water input - ???
+      text("under construction :(", 980, 350);
+
+
+      //page numbers
+      textAlign(CENTER, CENTER);
+      textSize(30);
+      text("page " + (bunnyPage + 1) + " of 6", 265, 520);
+      text("page " + (foxPage + 1) + " of 6", 715, 520);
+
+      //PAGE BUTTONS
+      //BUNNY, RIGHT
+      if(mouseX > 340 && mouseX < 340 + 30 && mouseY > 510 && mouseY < 510 + 30) fill(0,122);
+      else fill(0,51);
+      rect(340, 510, 30, 30);
+
+      fill(0);
+      triangle(265 + 85, 525 - 10, 265 + 85, 525 + 10, 265 + 85 + 15, 525);
+
+      //BUNNY, LEFT
+      if(mouseX > 160 && mouseX < 160 + 30 && mouseY > 510 && mouseY < 510 + 30) fill(0,122);
+      else fill(0,51);
+      rect(160, 510, 30, 30);
+
+      fill(0);
+      triangle(180, 525 - 10, 180, 525 + 10, 180 - 15, 525);
+
+      //FOX, RIGHT
+      if(mouseX > 790 && mouseX < 790 + 30 && mouseY > 510 && mouseY < 510 + 30) fill(0,122);
+      else fill(0,51);
+      rect(790, 510, 30, 30);
+
+      fill(0);
+      triangle(715 + 85, 525 - 10, 715 + 85, 525 + 10, 715 + 85 + 15, 525);
+
+      //FOX, LEFT
+      if(mouseX > 610 && mouseX < 610 + 30 && mouseY > 510 && mouseY < 510 + 30) fill(0,122);
+      else fill(0,51);
+      rect(610, 510, 30, 30);
+
+      fill(0);
+      triangle(630, 525 - 10, 630, 525 + 10, 630 - 15, 525);
+
+
+      break;
+
+    case "game":
+      sim.act();
+      break;
   }
-
-  //gen new bunnies
-  if (keys[32] && spawnFrame++ % 10 == 0) {
-    if (selectedSpawnButton == 0) {
-
-      addBunnyToArray(bunnies, random(10, 1190), random(10, 590),
-        bunnyDefaultSpeed, bunnyDefaultSpeedCost,
-        bunnyDefaultVision, bunnyDefaultVisionCost,
-        bunnyDefaultHungerCost, bunnyDefaultThirstCost,
-        bunnyDefaultHungerFromFood, bunnyDefaultThirstFromWater,
-        bunnyDefaultMaturityThreshold, bunnyDefaultOffspringReadiness,
-        bunnyDefaultUrgeThreshold, bunnyDefaultReproductionCost,
-        names[Math.floor(random(0, names.length + 1))], Math.floor(random(0, bunnySprites.length)));
-
-    } else {
-
-      addFoxToArray(foxes, random(10, 1190), random(10, 590),
-      foxDefaultSpeed, foxDefaultSpeedCost,
-      foxDefaultVision, foxDefaultVisionCost,
-      foxDefaultHungerCost, foxDefaultThirstCost,
-      foxDefaultHungerFromFood, foxDefaultThirstFromWater,
-      foxDefaultMaturityThreshold, foxDefaultOffspringReadiness,
-      foxDefaultUrgeThreshold, foxDefaultReproductionCost,
-      names[Math.floor(random(0, names.length + 1))], Math.floor(random(0, foxSprites.length)));
-
-    }
-  }
-
-  //autosave
-  if (frame % 1000 == 0) {
-    storeItem("BUNNIES", bunnies);
-    storeItem("FOXES", foxes);
-    storeItem("CARROTS", carrots);
-    storeItem("TIME", frame);
-  }
-
-  frame++;
 }

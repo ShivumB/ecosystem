@@ -1,49 +1,3 @@
-
-/*
-  mutation format = [mutationChance, mutationVariabilityLow, mutationVariabilityHigh]
-
-  mutation variability is a factor by which the trait
-  is multiplied (if a mutation occurs)
-
-  these are global variables so that all bunnies share the same mutation characteristics
-*/
-
-var foxDefaultSpeed = 1.9;
-var foxSpeedMutation = [0.7, 0.8, 1.2];
-
-var foxDefaultSpeedCost = 0.005;
-var foxSpeedCostMutation = [0, 1, 1];
-
-var foxDefaultVision = 100;
-var foxVisionMutation = [0.7, 0.8, 1.2];
-
-var foxDefaultVisionCost = 0.005 * 0.01;
-var foxVisionCostMutation = [0, 1, 1];
-
-var foxDefaultHungerCost = 0.01;
-var foxHungerCostMutation = [0, 1, 1];
-
-var foxDefaultThirstCost = 0.01;
-var foxThirstCostMutation = [0, 1, 1];
-
-var foxDefaultHungerFromFood = 15;
-var foxHungerFromFoodMutation = [0, 1, 1];
-
-var foxDefaultThirstFromWater = 0.5;
-var foxThirstFromWaterMutation = [0, 1, 1];
-
-var foxDefaultMaturityThreshold = 18;
-var foxMaturityThresholdMutation = [0, 1, 1];
-
-var foxDefaultOffspringReadiness = 0;
-var foxOffspringReadinessMutation = [0, 1, 1];
-
-var foxDefaultUrgeThreshold = 10;
-var foxUrgeThresholdMutation = [0, 1, 1];
-
-var foxDefaultReproductionCost = 5;
-var foxReproductionCostMutation = [0, 1, 1];
-
 function Fox(x, y,
     speed, speedCost,
     vision, visionCost,
@@ -212,7 +166,7 @@ Fox.prototype.explore = function () {
     this.frame %= 50;
 }
 
-Fox.prototype.reproduce = function (foxes) {
+Fox.prototype.reproduce = function (sim, foxes) {
 
 
     this.selectedMate = -1;
@@ -273,7 +227,7 @@ Fox.prototype.reproduce = function (foxes) {
         let urgeThreshold = (Math.random() < 0.5) ? this.urgeThreshold : foxes[this.selectedMate].urgeThreshold;
         let reproductionCost = (Math.random() < 0.5) ? this.reproductionCost : foxes[this.selectedMate].reproductionCost;
 
-        addFoxToArray(foxes, this.x, this.y,
+        addFoxToArray(foxes, sim, this.x, this.y,
             speed, speedCost,
             vision, visionCost,
             hungerCost, thirstCost,
@@ -330,7 +284,7 @@ Fox.prototype.decideBehavior = function (foxes) {
 
 }
 
-Fox.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
+Fox.prototype.act = function (sprites, sim, bunnies, foxes, carrots, water) {
 
     this.decideBehavior(foxes);
 
@@ -339,7 +293,7 @@ Fox.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
     } else if (this.behavior == 1) {
         this.findFood(bunnies);
     } else if (this.behavior == 2) {
-        this.reproduce(foxes);
+        this.reproduce(sim, foxes);
     }
 
     noStroke();
@@ -381,8 +335,8 @@ Fox.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
     this.x += this.velX;
     this.y += this.velY;
 
-    if (this.x < 0) this.x = 1200;
-    if (this.x > 1200) this.x = 0;
+    if (this.x < 0) this.x = 350;
+    if (this.x > 1350) this.x = 0;
     if (this.y < 0) this.y = 600;
     if (this.y > height) this.y = 0;
 
@@ -398,87 +352,28 @@ Fox.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
 
 }
 
-function addFoxToArray(arr, x, y, speed, speedCost, vision, visionCost, hungerCost, thirstCost, hungerFromFood, thirstFromWater, maturityThreshold, offspringReadiness, urgeThreshold, reproductionCost, name, spriteIndex) {
+function addFoxToArray(arr, sim, x, y, speed, speedCost, vision, visionCost, hungerCost, thirstCost, hungerFromFood, thirstFromWater, maturityThreshold, offspringReadiness, urgeThreshold, reproductionCost, name, spriteIndex) {
 
     arr.push(new Fox(x, y,
 
-        (Math.random() < foxSpeedMutation[0]) ? speed * random(foxSpeedMutation[1], foxSpeedMutation[2]) : speed,
-        (Math.random() < foxSpeedCostMutation[0]) ? speedCost * random(foxSpeedCostMutation[1], foxSpeedCostMutation[2]) : speedCost,
+        (Math.random() < sim.foxSpeed[1]) ? speed * random(sim.foxSpeed[2], sim.foxSpeed[3]) : speed,
+        (Math.random() < sim.foxSpeedCost[1]) ? speedCost * random(sim.foxSpeedCost[2], sim.foxSpeedCost[3]) : speedCost,
 
-        (Math.random() < foxVisionMutation[0]) ? vision * random(foxVisionMutation[1], foxVisionMutation[2]) : vision,
-        (Math.random() < foxVisionCostMutation[0]) ? visionCost * random(foxVisionCostMutation[1], foxVisionCostMutation[2]) : visionCost,
+        (Math.random() < sim.foxVision[1]) ? vision * random(sim.foxVision[2], sim.foxVision[3]) : vision,
+        (Math.random() < sim.foxVisionCost[1]) ? visionCost * random(sim.foxVisionCost[2], sim.foxVisionCost[3]) : visionCost,
 
-        (Math.random() < foxHungerCostMutation[0]) ? hungerCost * random(foxHungerCostMutation[1], foxHungerCostMutation[2]) : hungerCost,
-        (Math.random() < foxThirstCostMutation[0]) ? thirstCost * random(foxThirstCostMutation[1], foxThirstCostMutation[2]) : thirstCost,
+        (Math.random() < sim.foxHungerCost[1]) ? hungerCost * random(sim.foxHungerCost[2], sim.foxHungerCost[3]) : hungerCost,
+        (Math.random() < sim.foxThirstCost[1]) ? thirstCost * random(sim.foxThirstCost[2], sim.foxThirstCost[3]) : thirstCost,
 
-        (Math.random() < foxHungerFromFoodMutation[0]) ? hungerFromFood * random(foxHungerFromFoodMutation[1], foxHungerFromFoodMutation[2]) : hungerFromFood,
-        (Math.random() < foxThirstFromWaterMutation[0]) ? thirstFromWater * random(foxThirstFromWaterMutation[1], foxThirstFromWaterMutation[2]) : thirstFromWater,
+        (Math.random() < sim.foxHungerFromFood[1]) ? hungerFromFood * random(sim.foxHungerFromFood[2], sim.foxHungerFromFood[3]) : hungerFromFood,
+        (Math.random() < sim.foxThirstFromWater[1]) ? thirstFromWater * random(sim.foxThirstFromWater[2], sim.foxThirstFromWater[3]) : thirstFromWater,
 
-        (Math.random() < foxMaturityThresholdMutation[0]) ? maturityThreshold * random(foxMaturityThresholdMutation[1], foxMaturityThresholdMutation[2]) : maturityThreshold,
-        (Math.random() < foxOffspringReadinessMutation[0]) ? offspringReadiness * random(foxOffspringReadinessMutation[1], foxOffspringReadinessMutation[2]) : offspringReadiness,
+        (Math.random() < sim.foxMaturityThreshold[1]) ? maturityThreshold * random(sim.foxMaturityThreshold[2], sim.foxMaturityThreshold[3]) : maturityThreshold,
+        (Math.random() < sim.foxOffspringReadiness[1]) ? offspringReadiness * random(sim.foxOffspringReadiness[2], sim.foxOffspringReadiness[3]) : offspringReadiness,
 
-        (Math.random() < foxUrgeThresholdMutation[0]) ? urgeThreshold * random(foxUrgeThresholdMutation[1], foxUrgeThresholdMutation[2]) : urgeThreshold,
-        (Math.random() < foxReproductionCostMutation[0]) ? reproductionCost * random(foxReproductionCostMutation[1], foxReproductionCostMutation[2]) : reproductionCost,
+        (Math.random() < sim.foxUrgeThreshold[1]) ? urgeThreshold * random(sim.foxUrgeThreshold[2], sim.foxUrgeThreshold[3]) : urgeThreshold,
+        (Math.random() < sim.foxReproductionCost[1]) ? reproductionCost * random(sim.foxReproductionCost[2], sim.foxReproductionCost[3]) : reproductionCost,
 
         name, spriteIndex));
 
-}
-
-function constructFoxFromStorage(storage) {
-
-    let temp = new Fox(random(10, 1190), random(10, 590),
-    foxDefaultSpeed, foxDefaultSpeedCost,
-    foxDefaultVision, foxDefaultVisionCost,
-    foxDefaultHungerCost, foxDefaultThirstCost,
-    foxDefaultHungerFromFood, foxDefaultThirstFromWater,
-    foxDefaultMaturityThreshold, foxDefaultOffspringReadiness,
-    foxDefaultUrgeThreshold, foxDefaultReproductionCost,
-    "bugged fox", 0);
-
-    //state variables
-    if(storage.r != null) temp.r = storage.r;
-
-    if(storage.x != null) temp.x = storage.x;
-    if(storage.y != null) temp.y = storage.y;
-
-    if(storage.velX != null) temp.velX = storage.velX;
-    if(storage.velY != null) temp.velY = storage.velY;
-    
-    if(storage.hunger != null) temp.hunger = storage.hunger;
-    if(storage.selectedFood != null) temp.selectedFood = storage.selectedFood;
-
-    if(storage.thirst != null) temp.thirst = storage.thirst;
-    if(storage.selectedWater != null) temp.selectedWater = storage.selectedWater;
-
-    if(storage.urge != null) temp.urge = storage.urge;
-    if(storage.maturity != null) temp.maturity = storage.maturity;
-    if(storage.selectedMate != null) temp.selectedMate = storage.selectedMate;
-
-    if(storage.behavior != null) temp.behavior = storage.behavior;
-    if(storage.frame != null) temp.frame = storage.frame;
-    if(storage.alive != null) temp.alive = storage.alive;
-
-    //inheritables
-    if(storage.speed != null) temp.speed = storage.speed;
-    if(storage.speedCost != null) temp.speedCost = storage.speedCost;
-
-    if(storage.vision != null) temp.vision = storage.vision;
-    if(storage.visionCost != null) temp.speed = storage.speed;
-
-    if(storage.hungerCost != null) temp.speedCost = storage.speedCost;
-    if(storage.thirstCost != null) temp.vision = storage.vision;
-
-    if(storage.hungerFromFood != null) temp.speed = storage.speed;
-    if(storage.thirstFromWater != null) temp.speedCost = storage.speedCost;
-
-    if(storage.maturityThreshold != null) temp.vision = storage.vision;
-    if(storage.offspringReadiness != null) temp.speed = storage.speed;
-
-    if(storage.urgeThreshold != null) temp.speedCost = storage.speedCost;
-    if(storage.reproductionCost != null) temp.vision = storage.vision;
-
-    if(storage.name != null) temp.name = storage.name;
-    if(storage.spriteIndex != null) temp.spriteIndex = storage.spriteIndex;
-
-    return temp;
 }

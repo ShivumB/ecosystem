@@ -1,49 +1,3 @@
-
-/*
-  mutation format = [mutationChance, mutationVariabilityLow, mutationVariabilityHigh]
-
-  mutation variability is a factor by which the trait
-  is multiplied (if a mutation occurs)
-
-  these are global variables so that all bunnies share the same mutation characteristics
-*/
-
-var bunnyDefaultSpeed = 1;
-var bunnySpeedMutation = [0.4, 0.8, 1.2];
-
-var bunnyDefaultSpeedCost = 0.005;
-var bunnySpeedCostMutation = [0,1,1];
-
-var bunnyDefaultVision = 120;
-var bunnyVisionMutation = [0.4, 0.8, 1.2];
-
-var bunnyDefaultVisionCost = 0.005 * 0.01;
-var bunnyVisionCostMutation = [0,1,1];
-
-var bunnyDefaultHungerCost = 0.01;
-var bunnyHungerCostMutation = [0,1,1];
-
-var bunnyDefaultThirstCost = 0.01;
-var bunnyThirstCostMutation = [0,1,1];
-
-var bunnyDefaultHungerFromFood = 2;
-var bunnyHungerFromFoodMutation = [0,1,1];
-
-var bunnyDefaultThirstFromWater = 0.5;
-var bunnyThirstFromWaterMutation = [0,1,1];
-
-var bunnyDefaultMaturityThreshold = 5;
-var bunnyMaturityThresholdMutation = [0,1,1];
-
-var bunnyDefaultOffspringReadiness = 0;
-var bunnyOffspringReadinessMutation = [0,1,1];
-
-var bunnyDefaultUrgeThreshold = 3;
-var bunnyUrgeThresholdMutation = [0,1,1];
-
-var bunnyDefaultReproductionCost = 5;
-var bunnyReproductionCostMutation = [0,1,1];
-
 function Bunny(x, y,
   speed, speedCost,
   vision, visionCost,
@@ -216,7 +170,7 @@ Bunny.prototype.explore = function () {
   this.frame %= 50;
 }
 
-Bunny.prototype.reproduce = function (bunnies) {
+Bunny.prototype.reproduce = function (sim, bunnies) {
 
 
   this.selectedMate = -1;
@@ -278,7 +232,7 @@ Bunny.prototype.reproduce = function (bunnies) {
     let urgeThreshold = (Math.random() < 0.5) ? this.urgeThreshold : bunnies[this.selectedMate].urgeThreshold;
     let reproductionCost = (Math.random() < 0.5) ? this.reproductionCost : bunnies[this.selectedMate].reproductionCost;
 
-    addBunnyToArray(bunnies, this.x, this.y,
+    addBunnyToArray(bunnies, sim, this.x, this.y,
       speed, speedCost,
       vision, visionCost,
       hungerCost, thirstCost,
@@ -372,7 +326,7 @@ Bunny.prototype.decideBehavior = function (foxes) {
 
 }
 
-Bunny.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
+Bunny.prototype.act = function (sprites, sim, bunnies, foxes, carrots, water) {
 
   //BEFORE DOING ANYTHING, RUN COLLISIONS WITH BUNNIES
   let distX = 0;
@@ -404,7 +358,7 @@ Bunny.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
   } else if (this.behavior == 1) {
     this.findFood(carrots);
   } else if (this.behavior == 2) {
-    this.reproduce(bunnies);
+    this.reproduce(sim, bunnies);
   } else if (this.behavior == 3) {
     this.flee(foxes);
   }
@@ -450,8 +404,8 @@ Bunny.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
   this.x += this.velX;
   this.y += this.velY;
 
-  if (this.x < 0) this.x = 1200;
-  if (this.x > 1200) this.x = 0;
+  if (this.x < 0) this.x = 1350;
+  if (this.x > 1350) this.x = 0;
   if (this.y < 0) this.y = 600;
   if (this.y > height) this.y = 0;
 
@@ -467,87 +421,28 @@ Bunny.prototype.act = function (sprites, bunnies, foxes, carrots, water) {
 }
 
 
-function addBunnyToArray(arr, x, y, speed, speedCost, vision, visionCost, hungerCost, thirstCost, hungerFromFood, thirstFromWater, maturityThreshold, offspringReadiness, urgeThreshold, reproductionCost, name, spriteIndex) {
+function addBunnyToArray(arr, sim, x, y, speed, speedCost, vision, visionCost, hungerCost, thirstCost, hungerFromFood, thirstFromWater, maturityThreshold, offspringReadiness, urgeThreshold, reproductionCost, name, spriteIndex) {
 
   arr.push(new Bunny(x, y, 
 
-    (Math.random() < bunnySpeedMutation[0])? speed*random(bunnySpeedMutation[1], bunnySpeedMutation[2]) : speed,
-    (Math.random() < bunnySpeedCostMutation[0])? speedCost*random(bunnySpeedCostMutation[1], bunnySpeedCostMutation[2]) : speedCost,
+    (Math.random() < sim.bunnySpeed[1])? speed*random(sim.bunnySpeed[2], sim.bunnySpeed[3]) : speed,
+    (Math.random() < sim.bunnySpeedCost[1])? speedCost*random(sim.bunnySpeedCost[2], sim.bunnySpeedCost[3]) : speedCost,
 
-    (Math.random() < bunnyVisionMutation[0])? vision*random(bunnyVisionMutation[1], bunnyVisionMutation[2]) : vision,
-    (Math.random() < bunnyVisionCostMutation[0])? visionCost*random(bunnyVisionCostMutation[1], bunnyVisionCostMutation[2]) : visionCost,
+    (Math.random() < sim.bunnyVision[1])? vision*random(sim.bunnyVision[2], sim.bunnyVision[3]) : vision,
+    (Math.random() < sim.bunnyVisionCost[1])? visionCost*random(sim.bunnyVisionCost[2], sim.bunnyVisionCost[3]) : visionCost,
 
-    (Math.random() < bunnyHungerCostMutation[0])? hungerCost*random(bunnyHungerCostMutation[1], bunnyHungerCostMutation[2]) : hungerCost,
-    (Math.random() < bunnyThirstCostMutation[0])? thirstCost*random(bunnyThirstCostMutation[1], bunnyThirstCostMutation[2]) : thirstCost,
+    (Math.random() < sim.bunnyHungerCost[1])? hungerCost*random(sim.bunnyHungerCost[2], sim.bunnyHungerCost[3]) : hungerCost,
+    (Math.random() < sim.bunnyThirstCost[1])? thirstCost*random(sim.bunnyThirstCost[2], sim.bunnyThirstCost[3]) : thirstCost,
 
-    (Math.random() < bunnyHungerFromFoodMutation[0])? hungerFromFood*random(bunnyHungerFromFoodMutation[1], bunnyHungerFromFoodMutation[2]) : hungerFromFood,
-    (Math.random() < bunnyThirstFromWaterMutation[0])? thirstFromWater*random(bunnyThirstFromWaterMutation[1], bunnyThirstFromWaterMutation[2]) : thirstFromWater,
+    (Math.random() < sim.bunnyHungerFromFood[1])? hungerFromFood*random(sim.bunnyHungerFromFood[2], sim.bunnyHungerFromFood[3]) : hungerFromFood,
+    (Math.random() < sim.bunnyThirstFromWater[1])? thirstFromWater*random(sim.bunnyThirstFromWater[2], sim.bunnyThirstFromWater[3]) : thirstFromWater,
 
-    (Math.random() < bunnyMaturityThresholdMutation[0])? maturityThreshold*random(bunnyMaturityThresholdMutation[1], bunnyMaturityThresholdMutation[2]) : maturityThreshold,
-    (Math.random() < bunnyOffspringReadinessMutation[0])? offspringReadiness*random(bunnyOffspringReadinessMutation[1], bunnyOffspringReadinessMutation[2]) : offspringReadiness,
+    (Math.random() < sim.bunnyMaturityThreshold[1])? maturityThreshold*random(sim.bunnyMaturityThreshold[2], sim.bunnyMaturityThreshold[3]) : maturityThreshold,
+    (Math.random() < sim.bunnyOffspringReadiness[1])? offspringReadiness*random(sim.bunnyOffspringReadiness[2], sim.bunnyOffspringReadiness[3]) : offspringReadiness,
 
-    (Math.random() < bunnyUrgeThresholdMutation[0])? urgeThreshold*random(bunnyUrgeThresholdMutation[1], bunnyUrgeThresholdMutation[2]) : urgeThreshold,
-    (Math.random() < bunnyReproductionCostMutation[0])? reproductionCost*random(bunnyReproductionCostMutation[1], bunnyReproductionCostMutation[2]) : reproductionCost,
+    (Math.random() < sim.bunnyUrgeThreshold[1])? urgeThreshold*random(sim.bunnyUrgeThreshold[2], sim.bunnyUrgeThreshold[3]) : urgeThreshold,
+    (Math.random() < sim.bunnyReproductionCost[1])? reproductionCost*random(sim.bunnyReproductionCost[2], sim.bunnyReproductionCost[3]) : reproductionCost,
 
     name, spriteIndex));
 
-}
-
-function constructBunnyFromStorage(storage) {
-
-  let temp = new Bunny(random(10, 1190), random(10, 590),
-  bunnyDefaultSpeed, bunnyDefaultSpeedCost,
-  bunnyDefaultVision, bunnyDefaultVisionCost,
-  bunnyDefaultHungerCost, bunnyDefaultThirstCost,
-  bunnyDefaultHungerFromFood, bunnyDefaultThirstFromWater,
-  bunnyDefaultMaturityThreshold, bunnyDefaultOffspringReadiness,
-  bunnyDefaultUrgeThreshold, bunnyDefaultReproductionCost,
-  "bugged bunny", 0);
-
-  //state variables
-  if(storage.r != null) temp.r = storage.r;
-
-  if(storage.x != null) temp.x = storage.x;
-  if(storage.y != null) temp.y = storage.y;
-
-  if(storage.velX != null) temp.velX = storage.velX;
-  if(storage.velY != null) temp.velY = storage.velY;
-  
-  if(storage.hunger != null) temp.hunger = storage.hunger;
-  if(storage.selectedFood != null) temp.selectedFood = storage.selectedFood;
-
-  if(storage.thirst != null) temp.thirst = storage.thirst;
-  if(storage.selectedWater != null) temp.selectedWater = storage.selectedWater;
-
-  if(storage.urge != null) temp.urge = storage.urge;
-  if(storage.maturity != null) temp.maturity = storage.maturity;
-  if(storage.selectedMate != null) temp.selectedMate = storage.selectedMate;
-
-  if(storage.behavior != null) temp.behavior = storage.behavior;
-  if(storage.frame != null) temp.frame = storage.frame;
-  if(storage.alive != null) temp.alive = storage.alive;
-
-  //inheritables
-  if(storage.speed != null) temp.speed = storage.speed;
-  if(storage.speedCost != null) temp.speedCost = storage.speedCost;
-
-  if(storage.vision != null) temp.vision = storage.vision;
-  if(storage.visionCost != null) temp.speed = storage.speed;
-
-  if(storage.hungerCost != null) temp.speedCost = storage.speedCost;
-  if(storage.thirstCost != null) temp.vision = storage.vision;
-
-  if(storage.hungerFromFood != null) temp.speed = storage.speed;
-  if(storage.thirstFromWater != null) temp.speedCost = storage.speedCost;
-
-  if(storage.maturityThreshold != null) temp.vision = storage.vision;
-  if(storage.offspringReadiness != null) temp.speed = storage.speed;
-
-  if(storage.urgeThreshold != null) temp.speedCost = storage.speedCost;
-  if(storage.reproductionCost != null) temp.vision = storage.vision;
-
-  if(storage.name != null) temp.name = storage.name;
-  if(storage.spriteIndex != null) temp.spriteIndex = storage.spriteIndex;
-
-  return temp;
 }

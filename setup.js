@@ -1,156 +1,210 @@
-var bunnies;
-var foxes;
-var carrots;
-var water;
+var sim;
+var titleSim;
 
-var frame = 0;
+var scene;
 
-var keys;
+var bunnyInputs;
+var bunnyPage;
 
-var grassSprite;
-var carrotSprite;
-var bunnySprites;
-var foxSprites;
-var waterSPrite;
+var foxInputs;
+var foxPage;
 
-//to spawn bunnies or foxes
-var selectedSpawnButton;
+var carrotCapInput;
+var carrotSpawnRateInput;
 
-//for stats
-var chosenStat;
-
-var avgBunnySpeed = 0;
-var topBunnySpeed = 0;
-var avgBunnyVision = 0;
-var topBunnyVision = 0;
-
-var avgFoxSpeed = 0;
-var topFoxSpeed = 0;
-var avgFoxVision = 0;
-var topFoxVision = 0;
-
-//this is for when holding SPACE and spawning animals to prevent accidental spawning
-//every 10 frames, if key, spawn
-var spawnFrame;
-
-//name list for bunnies + foxes
-var names;
-
-//frames per carrot spawn
-var carrotSpawnRate = 1;
-var carrotCap = 1000;
+var inputLabels;
 
 function setup() {
 
     createCanvas(1350, 600);
-
     angleMode(DEGREES);
+    textFont(loadFont("fonts/VT323/VT323-Regular.ttf"));
 
-    selectedSpawnButton = 0;
-    keys = [];
-    keys[32] = false;
+    scene = "title";
 
-    grassSprite = loadImage("images/grass.png");
-    carrotSprite = loadImage("images/carrot.png");
+    bunnyInputs = [];
+    bunnyPage = 0;
 
-    bunnySprites = [];
+    for (i = 0; i < 6; i++) {
+
+        //VARIABLES, 1
+        bunnyInputs.push(createInput());
+        bunnyInputs[i * 8 + 0].position(375, 140);
+
+        bunnyInputs.push(createInput());
+        bunnyInputs[i * 8 + 1].position(375, 180);
+
+        bunnyInputs.push(createInput());
+        bunnyInputs[i * 8 + 2].position(290, 220);
+
+        bunnyInputs.push(createInput());
+        bunnyInputs[i * 8 + 3].position(375, 220);
+
+        //VARIABLES, 2
+        bunnyInputs.push(createInput());
+        bunnyInputs[i * 8 + 4].position(375, 340);
+
+        bunnyInputs.push(createInput());
+        bunnyInputs[i * 8 + 5].position(375, 380);
+
+        bunnyInputs.push(createInput());
+        bunnyInputs[i * 8 + 6].position(290, 420);
+
+        bunnyInputs.push(createInput());
+        bunnyInputs[i * 8 + 7].position(375, 420);
+    }
+
+    for (let i = 0; i < bunnyInputs.length; i++) {
+        bunnyInputs[i].addClass("textbox");
+        bunnyInputs[i].addClass("hidden");
+        bunnyInputs[i].attribute("type", "number");
+    }
+
+    foxInputs = [];
+    foxPage = 0;
+
+    for (i = 0; i < 6; i++) {
+        //VARIABLES, 1
+        foxInputs.push(createInput());
+        foxInputs[i * 8 + 0].position(375 + 450, 140);
+
+        foxInputs.push(createInput());
+        foxInputs[i * 8 + 1].position(375 + 450, 180);
+
+        foxInputs.push(createInput());
+        foxInputs[i * 8 + 2].position(290 + 450, 220);
+
+        foxInputs.push(createInput());
+        foxInputs[i * 8 + 3].position(375 + 450, 220);
+
+        //VARIABLES, 2
+        foxInputs.push(createInput());
+        foxInputs[i * 8 + 4].position(375 + 450, 340);
+
+        foxInputs.push(createInput());
+        foxInputs[i * 8 + 5].position(375 + 450, 380);
+
+        foxInputs.push(createInput());
+        foxInputs[i * 8 + 6].position(290 + 450, 420);
+
+        foxInputs.push(createInput());
+        foxInputs[i * 8 + 7].position(375 + 450, 420);
+    }
+
+    for (let i = 0; i < foxInputs.length; i++) {
+        foxInputs[i].addClass("textbox");
+        foxInputs[i].addClass("hidden");
+        foxInputs[i].attribute("type", "number");
+    }
+
+    inputLabels = [
+        "speed:", "speed cost:",
+        "vision:", "vision cost:",
+        "hunger cost:", "thirst cost:",
+        "hunger from food:", "thirst from water:",
+        "maturity threshold:", "offspring readiness:",
+        "reproduction urge threshold:", "reproduction cost:"
+    ];
+
+    //carrot inputs
+    carrotCapInput = createInput();
+    carrotCapInput.position(1230, 110);
+    carrotCapInput.attribute("type", "number");
+    carrotCapInput.addClass("textbox");
+    carrotCapInput.addClass("hidden");
+
+    carrotSpawnRateInput = createInput();
+    carrotSpawnRateInput.position(1230, 150);
+    carrotSpawnRateInput.attribute("type", "number");
+    carrotSpawnRateInput.addClass("textbox");
+    carrotSpawnRateInput.addClass("hidden");
+
+
+    //LOAD SPRITES
     bunnySprites.push(loadImage("images/bunny.png"));
     bunnySprites.push(loadImage("images/bunny_rainbow.png"));
     bunnySprites.push(loadImage("images/bunny_trans.png"));
 
-    foxSprites = [];
     foxSprites.push(loadImage("images/red_fox.png"));
+
+    carrotSprite = loadImage("images/carrot.png");
 
     waterSprite = loadImage("images/water.png");
 
-    names = ["Abigal M", "Ahmed A", "Alex Y", "Andy S", "Claire M", "Claire S", "Diego T", "Dilan R", "Elisa J", "Ella F", "Emerson B", "Griffin T", "Hali D", "Hemza D", "Iliana G", "Ivy Q", "Jack P", "Jenna J", "Jenna N", "Jenna Z", "Kamran R", "Karina P", "Kimberly K", "Kiran G", "Laura S", "Lillian B", "Maddy B", "Marya H", "Neil K", "Nina T", "Noora H", "Prachi S", "Rianna A", "Rishab S", "Samiksha G", "Samita U", "Sarah G", "Shahaan S", "Sarah G", "Shivum B", "Sophia B", "Varun K", "Will R", "Zoe F"];
+    grassSprite = loadImage("images/grass.png");
 
-    water = [];
-    water.push(new Water(300, 300));
-    water.push(new Water(900, 300));
+    //MAKE SIM
+    sim = new Ecosystem();
 
-    frame = getItem("TIME");
-    if (frame == null) frame = 0;
+    //PUT DEFAULT SIM VALUES INTO INPUTS
+    for(let i = 0; i < 4; i++) {
 
-    carrots = getItem("CARROTS");
+        //BUNNIES
+        bunnyInputs[4*0 + i].value(sim.bunnySpeed[i]);
+        bunnyInputs[4*1 + i].value(sim.bunnySpeedCost[i]);
 
-    if (carrots == null) {
-        carrots = [];
-        for (let i = 0; i < carrotCap; i++) {
-            carrots.push(new Carrot(Math.random() * 1180 + 10, Math.random() * 580 + 10));
+        bunnyInputs[4*2 + i].value(sim.bunnyVision[i]);
+        bunnyInputs[4*3 + i].value(sim.bunnyVisionCost[i]);
 
-            for (let j = 0; j < water.length; j++) {
-                let distX = carrots[i].x - water[j].x;
-                let distY = carrots[i].y - water[j].y;
+        bunnyInputs[4*4 + i].value(sim.bunnyHungerCost[i]);
+        bunnyInputs[4*5 + i].value(sim.bunnyThirstCost[i]);
 
-                if (distX * distX + distY * distY < Math.pow(carrots[i].r + water[j].r, 2)) {
-                    carrots[i].alive = false;
-                }
-            }
+        bunnyInputs[4*6 + i].value(sim.bunnyHungerFromFood[i]);
+        bunnyInputs[4*7 + i].value(sim.bunnyThirstFromWater[i]);
 
-        }
-    } else {
-        for (let i = 0; i < carrots.length; i++) {
+        bunnyInputs[4*8 + i].value(sim.bunnyMaturityThreshold[i]);
+        bunnyInputs[4*9 + i].value(sim.bunnyOffspringReadiness[i]);
 
-            let temp = new Carrot(-10, -10);
-            temp.x = carrots[i].x;
-            temp.y = carrots[i].y;
-            temp.r = carrots[i].r;
-            temp.alive = carrots[i].alive;
+        bunnyInputs[4*10 + i].value(sim.bunnyUrgeThreshold[i]);
+        bunnyInputs[4*11 + i].value(sim.bunnyReproductionCost[i]);
 
-            carrots[i] = temp;
-        }
+
+        //FOXES
+        foxInputs[4*0 + i].value(sim.foxSpeed[i]);
+        foxInputs[4*1 + i].value(sim.foxSpeedCost[i]);
+
+        foxInputs[4*2 + i].value(sim.foxVision[i]);
+        foxInputs[4*3 + i].value(sim.foxVisionCost[i]);
+
+        foxInputs[4*4 + i].value(sim.foxHungerCost[i]);
+        foxInputs[4*5 + i].value(sim.foxThirstCost[i]);
+
+        foxInputs[4*6 + i].value(sim.foxHungerFromFood[i]);
+        foxInputs[4*7 + i].value(sim.foxThirstFromWater[i]);
+
+        foxInputs[4*8 + i].value(sim.foxMaturityThreshold[i]);
+        foxInputs[4*9 + i].value(sim.foxOffspringReadiness[i]);
+
+        foxInputs[4*10 + i].value(sim.foxUrgeThreshold[i]);
+        foxInputs[4*11 + i].value(sim.foxReproductionCost[i]);
     }
 
-    bunnies = getItem("BUNNIES");
-    if (bunnies == null) {
-        bunnies = [];
-        for (let i = 0; i < 100; i++) {
+    carrotCapInput.value(sim.carrotCap);
+    carrotSpawnRateInput.value(sim.carrotSpawnRate);
 
-            addBunnyToArray(bunnies, random(10, 1190), random(10, 590),
-                bunnyDefaultSpeed, bunnyDefaultSpeedCost,
-                bunnyDefaultVision, bunnyDefaultVisionCost,
-                bunnyDefaultHungerCost, bunnyDefaultThirstCost,
-                bunnyDefaultHungerFromFood, bunnyDefaultThirstFromWater,
-                bunnyDefaultMaturityThreshold, bunnyDefaultOffspringReadiness,
-                bunnyDefaultUrgeThreshold, bunnyDefaultReproductionCost,
-                names[Math.floor(random(0, names.length + 1))], Math.floor(random(0, bunnySprites.length)));
 
-        }
+    //TITLE SIM (so the title screen looks nice!)
+    titleSim = new Ecosystem();
+    titleSim.bunnySpeed = [0.7, 0.5, 0.5, 1.5];
+    titleSim.bunnySpeedCost[0] = 0;
 
-    } else {
-        for(let i = 0; i < bunnies.length; i++) {
-            bunnies[i] = constructBunnyFromStorage(bunnies[i]);
-        }
-    }
+    titleSim.bunnyVision[0] = 1000;
+    titleSim.bunnyVisionCost[0] = 0;
 
-    foxes = getItem("FOXES");
-    if (foxes == null) {
-        foxes = [];
-        for (let i = 0; i < 4; i++) {
+    titleSim.bunnyHungerCost[0] = 0.005;
+    titleSim.bunnyThirstCost[0] = 0;
 
-            addFoxToArray(foxes, random(10, 1190), random(10, 590),
-                foxDefaultSpeed, foxDefaultSpeedCost,
-                foxDefaultVision, foxDefaultVisionCost,
-                foxDefaultHungerCost, foxDefaultThirstCost,
-                foxDefaultHungerFromFood, foxDefaultThirstFromWater,
-                foxDefaultMaturityThreshold, foxDefaultOffspringReadiness,
-                foxDefaultUrgeThreshold, foxDefaultReproductionCost,
-                names[Math.floor(random(0, names.length + 1))], Math.floor(random(0, foxSprites.length)));
-        }
-    } else {
-        for(let i = 0; i < foxes.length; i++) {
-            foxes[i] = constructFoxFromStorage(foxes[i]);
-        }
-    }
+    titleSim.bunnyMaturityThreshold[0] = 10;
+    titleSim.bunnyUrgeThreshold[0] = 10;
 
-    chosenStat = bunnies[0];
+    titleSim.carrotSpawnRate = 50;
+    titleSim.carrotCap = 150;
+
+    titleSim.populate([[150, 150, 75], [1050, 450, 125]], 100, 2, 0);
 }
 
 keyPressed = function () {
     keys[keyCode] = true;
-
-    if (keyCode == 32) spawnFrame = 0;
 }
 
 keyReleased = function () {
@@ -158,32 +212,102 @@ keyReleased = function () {
 }
 
 mouseClicked = function () {
-    if (mouseX < 1200) {
+    switch (scene) {
 
-        for (let i = 0; i < bunnies.length; i++) {
-            if (mouseX > bunnies[i].x - 15 && mouseX < bunnies[i].x + 15 && mouseY > bunnies[i].y - 19 && mouseY < bunnies[i].y + 19) {
-                chosenStat = bunnies[i];
+        case "title":
+
+            //create simulation
+            if (mouseX > 475 && mouseX < 475 + 400 && mouseY > 300 && mouseY < 300 + 75) {
+                scene = "create";
             }
-        }
 
-        for (let i = 0; i < foxes.length; i++) {
-            if (mouseX > foxes[i].x - 20 && mouseX < foxes[i].x + 20 && mouseY > foxes[i].y - 20 && mouseY < foxes[i].y + 20) {
-                chosenStat = foxes[i];
+            //load simulation
+            if (mouseX > 475 && mouseX < 475 + 400 && mouseY > 400 && mouseY < 400 + 75) {
+
             }
-        }
+            break;
 
-    } else {
+        case "create":
 
-        if (mouseY > 200 & mouseY < 240) {
-            clearStorage();
-            setup();
-        }
+            if (mouseX > 340 && mouseX < 340 + 30 && mouseY > 510 && mouseY < 510 + 30) {
+                bunnyPage = Math.min(5, bunnyPage + 1);
+            }
 
-        if (mouseY > 550) {
-            selectedSpawnButton = 1;
-        } else if (mouseY > 500) {
-            selectedSpawnButton = 0;
-        }
+            if (mouseX > 160 && mouseX < 160 + 30 && mouseY > 510 && mouseY < 510 + 30) {
+                bunnyPage = Math.max(0, bunnyPage - 1);
+            }
 
+            if (mouseX > 790 && mouseX < 790 + 30 && mouseY > 510 && mouseY < 510 + 30) {
+                foxPage = Math.min(5, foxPage + 1);
+            }
+
+            if (mouseX > 610 && mouseX < 610 + 30 && mouseY > 510 && mouseY < 510 + 30) {
+                foxPage = Math.max(0, foxPage - 1);
+            }
+
+            if(mouseX > 950 && mouseX < 950 + 350 && mouseY > 500 && mouseY < 500 + 50) {
+                updateSimFromInputs(sim);
+                sim.populate([[300, 300, 150], [900, 300, 150]], sim.carrotCap, 100, 4);
+
+                for(let i = 0; i < bunnyInputs.length; i++) {
+                    bunnyInputs[i].addClass("hidden");
+                    foxInputs[i].addClass("hidden");
+
+                    carrotCapInput.addClass("hidden");
+                    carrotSpawnRateInput.addClass("hidden");
+                }
+                
+                scene = "game";
+            }
+
+            break;
     }
+}
+
+function updateSimFromInputs(sim) {
+
+    for(let i = 0; i < 4; i++) {
+        //0+ to convert to number
+
+        //UPDATE BUNNIES
+        sim.bunnySpeed[i] = parseFloat(bunnyInputs[0*4 + i].value());
+        sim.bunnySpeedCost[i] = parseFloat(bunnyInputs[1*4 + i].value());
+
+        sim.bunnyVision[i] = parseFloat(bunnyInputs[2*4 + i].value());
+        sim.bunnyVisionCost[i] = parseFloat(bunnyInputs[3*4 + i].value());
+
+        sim.bunnyHungerCost[i] = parseFloat(bunnyInputs[4*4 + i].value());
+        sim.bunnyThirstCost[i] = parseFloat(bunnyInputs[5*4 + i].value());
+
+        sim.bunnyHungerFromFood[i] = parseFloat(bunnyInputs[6*4 + i].value());
+        sim.bunnyThirstFromWater[i] = parseFloat(bunnyInputs[7*4 + i].value());
+
+        sim.bunnyMaturityThreshold[i] = parseFloat(bunnyInputs[8*4 + i].value());
+        sim.bunnyOffspringReadiness[i] = parseFloat(bunnyInputs[9*4 + i].value());
+
+        sim.bunnyUrgeThreshold[i] = parseFloat(bunnyInputs[10*4 + i].value());
+        sim.bunnyReproductionCost[i] = parseFloat(bunnyInputs[11*4 + i].value());
+
+        //UPDATE FOXES
+        sim.foxSpeed[i] = parseFloat(foxInputs[0*4 + i].value());
+        sim.foxSpeedCost[i] = parseFloat(foxInputs[1*4 + i].value());
+
+        sim.foxVision[i] = parseFloat(foxInputs[2*4 + i].value());
+        sim.foxVisionCost[i] = parseFloat(foxInputs[3*4 + i].value());
+
+        sim.foxHungerCost[i] = parseFloat(foxInputs[4*4 + i].value());
+        sim.foxThirstCost[i] = parseFloat(foxInputs[5*4 + i].value());
+
+        sim.foxHungerFromFood[i] = parseFloat(foxInputs[6*4 + i].value());
+        sim.foxThirstFromWater[i] = parseFloat(foxInputs[7*4 + i].value());
+
+        sim.foxMaturityThreshold[i] = parseFloat(foxInputs[8*4 + i].value());
+        sim.foxOffspringReadiness[i] = parseFloat(foxInputs[9*4 + i].value());
+
+        sim.foxUrgeThreshold[i] = parseFloat(foxInputs[10*4 + i].value());
+        sim.foxReproductionCost[i] = parseFloat(foxInputs[11*4 + i].value());
+    }
+
+    sim.carrotCap = carrotCapInput.value();
+    sim.carrotSpawnRate = carrotSpawnRateInput.value();
 }

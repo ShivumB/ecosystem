@@ -1,8 +1,8 @@
-function Water(x, y) {
+function Water(x, y, r) {
     this.x = x;
     this.y = y;
   
-    this.r = 150;
+    this.r = r;
   }
   
   Water.prototype.act = function (sprite) {

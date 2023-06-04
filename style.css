@@ -1,7 +1,35 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 }
+
 canvas {
   display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+.textbox {
+  outline: none;
+  border: none;
+  border-bottom: 3px solid black;
+
+  width:40px;
+
+  background-color: rgba(0,0,0,0.2);
+
+  font-size:x-large;
+  font-family: 'VT323', monospace;
+}
+
+.textbox:focus {
+  background-color: rgba(0,0,0,0.5);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  display: none;
 }
