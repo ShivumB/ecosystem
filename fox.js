@@ -57,6 +57,7 @@ Fox.prototype.findFood = function (bunnies) {
 
 
     if(this.selectedFood == null || !this.selectedMate.alive) {
+        this.selectedFood = null;
         let minDist = 1000000;
 
         let distX = 0;
@@ -177,7 +178,8 @@ Fox.prototype.explore = function () {
 Fox.prototype.reproduce = function (sim, foxes) {
 
 
-    if(this.selectedMate != null) {
+    if(this.selectedMate == null || !this.selectedMate.alive) {
+        this.selectedMate = null;
         let minDist = 1000000;
 
         let distX = 0;
