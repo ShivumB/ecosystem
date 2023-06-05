@@ -17,14 +17,14 @@ function Fox(x, y,
     this.velY = 0;
 
     this.hunger = 0;
-    this.selectedFood = -1;
+    this.selectedFood = null;
 
     this.thirst = 0;
-    this.selectedWater = -1;
+    this.selectedWater = null;
 
     this.urge = 0;
     this.maturity = 0;
-    this.selectedMate = -1;
+    this.selectedMate = null;
 
     this.behavior = -1;
     this.frame = 0;
@@ -55,44 +55,47 @@ function Fox(x, y,
 
 Fox.prototype.findFood = function (bunnies) {
 
-    this.selectedFood = -1;
-    let minDist = 1000000;
 
-    let distX = 0;
-    let distY = 0;
-    let mag = 0;
-    for (let i = 0; i < bunnies.length; i++) {
+    if(this.selectedFood == null || !this.selectedMate.alive) {
+        let minDist = 1000000;
 
-        distX = bunnies[i].x - this.x;
-        distY = bunnies[i].y - this.y;
-        mag = distX * distX + distY * distY;
+        let distX = 0;
+        let distY = 0;
+        let mag = 0;
+        for (let i = 0; i < bunnies.length; i++) {
 
-        if (bunnies[i].alive && mag < Math.pow(this.vision + bunnies[i].r, 2)) {
+            distX = bunnies[i].x - this.x;
+            distY = bunnies[i].y - this.y;
+            mag = distX * distX + distY * distY;
 
-            if (mag < minDist) {
-                minDist = mag;
-                this.selectedFood = i;
+            if (bunnies[i].alive && mag < Math.pow(this.vision + bunnies[i].r, 2)) {
+
+                if (mag < minDist) {
+                    minDist = mag;
+                    this.selectedFood = bunnies[i];
+                }
             }
-        }
 
+        }
     }
 
     distX = 0;
     distY = 0;
-    if (this.selectedFood >= 0) {
+    if (this.selectedFood != null) {
 
-        distX = bunnies[this.selectedFood].x - this.x;
-        distY = bunnies[this.selectedFood].y - this.y;
+        distX = this.selectedFood.x - this.x;
+        distY = this.selectedFood.y - this.y;
     }
 
-    if (this.selectedFood >= 0 && distX * distX + distY * distY < Math.pow(bunnies[this.selectedFood].r + this.r, 2)) {
+    if (this.selectedFood != null && distX * distX + distY * distY < Math.pow(this.selectedFood.r + this.r, 2)) {
 
-        bunnies[this.selectedFood].alive = false;
+        this.selectedFood.alive = false;
+        this.selectedFood = null;
         this.hunger = Math.max(0, this.hunger - this.hungerFromFood);
 
         if (this.hunger < 5) this.behavior = -1;
 
-    } else if (this.selectedFood >= 0) {
+    } else if (this.selectedFood != null) {
 
         let theta = Math.atan2(distY, distX);
 
@@ -108,42 +111,47 @@ Fox.prototype.findFood = function (bunnies) {
 
 Fox.prototype.findWater = function (water) {
 
-    this.selectedWater = -1;
-    let minDist = 1000000;
 
-    let distX = 0;
-    let distY = 0;
-    let mag = 0;
-    for (let i = 0; i < water.length; i++) {
+    if(this.selectedWater == null) {
+        let minDist = 1000000;
 
-        let distX = water[i].x - this.x;
-        let distY = water[i].y - this.y;
-        mag = distX * distX + distY * distY;
+        let distX = 0;
+        let distY = 0;
+        let mag = 0;
+        for (let i = 0; i < water.length; i++) {
 
-        if (mag < Math.pow(this.vision + water[i].r, 2)) {
+            let distX = water[i].x - this.x;
+            let distY = water[i].y - this.y;
+            mag = distX * distX + distY * distY;
 
-            if (mag < minDist) {
-                minDist = mag;
-                this.selectedWater = i;
+            if (mag < Math.pow(this.vision + water[i].r, 2)) {
+
+                if (mag < minDist) {
+                    minDist = mag;
+                    this.selectedWater = i;
+                }
             }
-        }
 
+        }
     }
 
     distX = 0;
     distY = 0;
-    if (this.selectedWater >= 0) {
-        distX = water[this.selectedWater].x - this.x;
-        distY = water[this.selectedWater].y - this.y;
+    if (this.selectedWater != null) {
+        distX = this.selectedWater.x - this.x;
+        distY = this.selectedWater.y - this.y;
     }
 
-    if (this.selectedWater >= 0 && distX * distX + distY * distY < Math.pow(water[this.selectedWater].r + this.r + 5, 2)) {
+    if (this.selectedWater != null && distX * distX + distY * distY < Math.pow(this.selectedWater.r + this.r + 5, 2)) {
 
         this.thirst = Math.max(0, this.thirst - this.thirstFromWater);
 
-        if (this.thirst < 10) this.behavior = -1;
+        this.selectedWater = null;
 
-    } else if (this.selectedWater >= 0) {
+        if (this.thirst < 10) this.behavior = -1;
+            
+
+    } else if (this.selectedWater != null) {
 
         let theta = Math.atan2(distY, distX);
 
@@ -169,41 +177,42 @@ Fox.prototype.explore = function () {
 Fox.prototype.reproduce = function (sim, foxes) {
 
 
-    this.selectedMate = -1;
-    let minDist = 1000000;
+    if(this.selectedMate != null) {
+        let minDist = 1000000;
 
-    let distX = 0;
-    let distY = 0;
-    let mag = 0;
-    for (let i = 0; i < foxes.length; i++) {
+        let distX = 0;
+        let distY = 0;
+        let mag = 0;
+        for (let i = 0; i < foxes.length; i++) {
 
-        if (foxes[i] == this) continue;
+            if (foxes[i] == this) continue;
 
-        distX = foxes[i].x - this.x;
-        distY = foxes[i].y - this.y;
-        mag = distX * distX + distY * distY;
+            distX = foxes[i].x - this.x;
+            distY = foxes[i].y - this.y;
+            mag = distX * distX + distY * distY;
 
-        if (foxes[i].maturity > foxes[i].maturityThreshold && foxes[i].urge > foxes[i].urgeThreshold && mag < Math.pow(this.vision + foxes[i].r, 2)) {
+            if (foxes[i].maturity > foxes[i].maturityThreshold && foxes[i].urge > foxes[i].urgeThreshold && mag < Math.pow(this.vision + foxes[i].r, 2)) {
 
-            if (mag < minDist) {
-                minDist = mag;
-                this.selectedMate = i;
+                if (mag < minDist) {
+                    minDist = mag;
+                    this.selectedMate = foxes[i];
+                }
             }
         }
     }
 
-    if (this.selectedMate >= 0) {
-        distX = foxes[this.selectedMate].x - this.x;
-        distY = foxes[this.selectedMate].y - this.y;
+    if (this.selectedMate != null) {
+        distX = this.selectedMate.x - this.x;
+        distY = this.selectedMate.y - this.y;
     }
 
-    if (this.selectedMate >= 0 && distX * distX + distY * distY < Math.pow(this.r + foxes[this.selectedMate].r, 2)) {
+    if (this.selectedMate >= 0 && distX * distX + distY * distY < Math.pow(this.r + this.selectedMate.r, 2)) {
 
         this.urge = 0;
-        foxes[this.selectedMate].urge = 0;
+        this.selectedMate.urge = 0;
 
         this.hunger += this.reproductionCost;
-        foxes[this.selectedMate].hunger += foxes[this.selectedMate].reproductionCost;
+        this.selectedMate.hunger += this.selectedMate.reproductionCost;
 
         /*independent assortment
 
@@ -214,18 +223,18 @@ Fox.prototype.reproduce = function (sim, foxes) {
       so: this is to ensure randomness. name and sprite are not random.
       will see if this actually matters later
     */
-        let speed = (Math.random() < 0.5) ? this.speed : foxes[this.selectedMate].speed;
-        let speedCost = (Math.random() < 0.5) ? this.speedCost : foxes[this.selectedMate].speedCost;
-        let vision = (Math.random() < 0.5) ? this.vision : foxes[this.selectedMate].vision;
-        let visionCost = (Math.random() < 0.5) ? this.visionCost : foxes[this.selectedMate].visionCost;
-        let hungerCost = (Math.random() < 0.5) ? this.hungerCost : foxes[this.selectedMate].hungerCost;
-        let thirstCost = (Math.random() < 0.5) ? this.thirstCost : foxes[this.selectedMate].thirstCost;
-        let hungerFromFood = (Math.random() < 0.5) ? this.hungerFromFood : foxes[this.selectedMate].hungerFromFood;
-        let thirstFromWater = (Math.random() < 0.5) ? this.thirstFromWater : foxes[this.selectedMate].thirstFromWater;
-        let maturityThreshold = (Math.random() < 0.5) ? this.maturityThreshold : foxes[this.selectedMate].maturityThreshold;
-        let offspringReadiness = (Math.random() < 0.5) ? this.offspringReadiness : foxes[this.selectedMate].offspringReadiness;
-        let urgeThreshold = (Math.random() < 0.5) ? this.urgeThreshold : foxes[this.selectedMate].urgeThreshold;
-        let reproductionCost = (Math.random() < 0.5) ? this.reproductionCost : foxes[this.selectedMate].reproductionCost;
+        let speed = (Math.random() < 0.5) ? this.speed : this.selectedMate.speed;
+        let speedCost = (Math.random() < 0.5) ? this.speedCost : this.selectedMate.speedCost;
+        let vision = (Math.random() < 0.5) ? this.vision : this.selectedMate.vision;
+        let visionCost = (Math.random() < 0.5) ? this.visionCost : this.selectedMate.visionCost;
+        let hungerCost = (Math.random() < 0.5) ? this.hungerCost : this.selectedMate.hungerCost;
+        let thirstCost = (Math.random() < 0.5) ? this.thirstCost : this.selectedMate.thirstCost;
+        let hungerFromFood = (Math.random() < 0.5) ? this.hungerFromFood : this.selectedMate.hungerFromFood;
+        let thirstFromWater = (Math.random() < 0.5) ? this.thirstFromWater : this.selectedMate.thirstFromWater;
+        let maturityThreshold = (Math.random() < 0.5) ? this.maturityThreshold : this.selectedMate.maturityThreshold;
+        let offspringReadiness = (Math.random() < 0.5) ? this.offspringReadiness : this.selectedMate.offspringReadiness;
+        let urgeThreshold = (Math.random() < 0.5) ? this.urgeThreshold : this.selectedMate.urgeThreshold;
+        let reproductionCost = (Math.random() < 0.5) ? this.reproductionCost : this.selectedMate.reproductionCost;
 
         addFoxToArray(foxes, sim, this.x, this.y,
             speed, speedCost,
@@ -234,12 +243,12 @@ Fox.prototype.reproduce = function (sim, foxes) {
             hungerFromFood, thirstFromWater,
             maturityThreshold, offspringReadiness,
             urgeThreshold, reproductionCost,
-            this.name, foxes[this.selectedMate].spriteIndex);
+            this.name, this.selectedMate.spriteIndex);
 
-
+        this.selectedMate = null;
         this.behavior = -1;
 
-    } else if (this.selectedMate >= 0) {
+    } else if (this.selectedMate != null) {
         let theta = Math.atan2(distY, distX);
 
         this.velX += 1 * Math.cos(theta);

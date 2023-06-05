@@ -17,14 +17,14 @@ function Bunny(x, y,
   this.velY = 0;
 
   this.hunger = 0;
-  this.selectedFood = -1;
+  this.selectedFood = null;
 
   this.thirst = 0;
-  this.selectedWater = -1;
+  this.selectedWater = null;
 
   this.urge = 0;
   this.maturity = 0;
-  this.selectedMate = -1;
+  this.selectedMate = null;
 
   this.behavior = -1;
   this.frame = 0;
@@ -55,44 +55,48 @@ function Bunny(x, y,
 
 Bunny.prototype.findFood = function (carrots) {
 
-  this.selectedFood = -1;
-  let minDist = 1000000;
 
-  let distX = 0;
-  let distY = 0;
-  let mag = 0;
-  for (let i = 0; i < carrots.length; i++) {
+  if(this.selectedFood == null || this.selectedFood.alive == false) {
 
-    distX = carrots[i].x - this.x;
-    distY = carrots[i].y - this.y;
-    mag = distX * distX + distY * distY;
+    let minDist = 1000000;
 
-    if (carrots[i].alive && mag < Math.pow(this.vision + carrots[i].r, 2)) {
+    let distX = 0;
+    let distY = 0;
+    let mag = 0;
+    for (let i = 0; i < carrots.length; i++) {
 
-      if (mag < minDist) {
-        minDist = mag;
-        this.selectedFood = i;
+      distX = carrots[i].x - this.x;
+      distY = carrots[i].y - this.y;
+      mag = distX * distX + distY * distY;
+
+      if (carrots[i].alive && mag < Math.pow(this.vision + carrots[i].r, 2)) {
+
+        if (mag < minDist) {
+          minDist = mag;
+          this.selectedFood = carrots[i];
+        }
       }
-    }
 
+    }
   }
 
   distX = 0;
   distY = 0;
-  if (this.selectedFood >= 0) {
+  if (this.selectedFood != null) {
 
-    distX = carrots[this.selectedFood].x - this.x;
-    distY = carrots[this.selectedFood].y - this.y;
+    distX = this.selectedFood.x - this.x;
+    distY = this.selectedFood.y - this.y;
   }
 
-  if (this.selectedFood >= 0 && distX * distX + distY * distY < Math.pow(carrots[this.selectedFood].r + this.r, 2)) {
+  if (this.selectedFood != null && distX * distX + distY * distY < Math.pow(this.selectedFood.r + this.r, 2)) {
 
-    carrots[this.selectedFood].alive = false;
+    this.selectedFood.alive = false;
+    this.selectedFood = null;
     this.hunger = Math.max(0, this.hunger - this.hungerFromFood);
 
     if (this.hunger < 5) this.behavior = -1;
 
-  } else if (this.selectedFood >= 0) {
+  } else if (this.selectedFood != null) {
 
     //HUNTING
     let theta = Math.atan2(distY, distX);
@@ -109,43 +113,47 @@ Bunny.prototype.findFood = function (carrots) {
 
 Bunny.prototype.findWater = function (water) {
 
-  this.selectedWater = -1;
-  let minDist = 1000000;
 
-  let distX = 0;
-  let distY = 0;
-  let mag = 0;
+  if(this.selectedWater == null) {
 
-  for (let i = 0; i < water.length; i++) {
+    let minDist = 1000000;
 
-    distX = water[i].x - this.x;
-    distY = water[i].y - this.y;
-    mag = distX * distX + distY * distY;
+    let distX = 0;
+    let distY = 0;
+    let mag = 0;
 
-    if (mag< Math.pow(this.vision + water[i].r, 2)) {
+    for (let i = 0; i < water.length; i++) {
 
-      if (mag < minDist) {
-        minDist = mag;
-        this.selectedWater = i;
+      distX = water[i].x - this.x;
+      distY = water[i].y - this.y;
+      mag = distX * distX + distY * distY;
+
+      if (mag< Math.pow(this.vision + water[i].r, 2)) {
+
+        if (mag < minDist) {
+          minDist = mag;
+          this.selectedWater = water[i];
+        }
       }
-    }
 
+    }
   }
 
   distX = 0;
   distY = 0;
-  if (this.selectedWater >= 0) {
-    distX = water[this.selectedWater].x - this.x;
-    distY = water[this.selectedWater].y - this.y;
+  if (this.selectedWater != null) {
+    distX = this.selectedWater.x - this.x;
+    distY = this.selectedWater.y - this.y;
   }
 
-  if (this.selectedWater >= 0 && distX * distX + distY * distY < Math.pow(water[this.selectedWater].r + this.r + 5, 2)) {
+  if (this.selectedWater != null && distX * distX + distY * distY < Math.pow(this.selectedWater.r + this.r + 5, 2)) {
 
     this.thirst = Math.max(0, this.thirst - this.thirstFromWater);
 
     if (this.thirst < 10) this.behavior = -1;
+    this.selectedWater = null;
 
-  } else if (this.selectedWater >= 0) {
+  } else if (this.selectedWater != null) {
 
     let theta = Math.atan2(distY, distX);
 
@@ -173,42 +181,45 @@ Bunny.prototype.explore = function () {
 Bunny.prototype.reproduce = function (sim, bunnies) {
 
 
-  this.selectedMate = -1;
-  let minDist = 1000000;
+  if(this.selectedMate == null || !this.selectedMate.alive) {
+    this.selectedMate = null;
 
-  let distX = 0;
-  let distY = 0;
-  let mag = 0;
-  for (let i = 0; i < bunnies.length; i++) {
+    let minDist = 1000000;
 
-    if (bunnies[i] == this) continue;
+    let distX = 0;
+    let distY = 0;
+    let mag = 0;
+    for (let i = 0; i < bunnies.length && minDist; i++) {
 
-    distX = bunnies[i].x - this.x;
-    distY = bunnies[i].y - this.y;
-    mag = distX * distX + distY * distY;
+      if (bunnies[i] == this) continue;
 
-    if (bunnies[i].maturity > bunnies[i].maturityThreshold && bunnies[i].urge > bunnies[i].urgeThreshold && mag < Math.pow(this.vision + bunnies[i].r, 2)) {
+      distX = bunnies[i].x - this.x;
+      distY = bunnies[i].y - this.y;
+      mag = distX * distX + distY * distY;
 
-      if (mag < minDist) {
-        minDist = mag;
-        this.selectedMate = i;
+      if (bunnies[i].maturity > bunnies[i].maturityThreshold && bunnies[i].urge > bunnies[i].urgeThreshold && mag < Math.pow(this.vision + bunnies[i].r, 2)) {
+
+        if (mag < minDist) {
+          minDist = mag;
+          this.selectedMate = i;
+        }
+
       }
-
     }
   }
 
-  if (this.selectedMate >= 0) {
-    distX = bunnies[this.selectedMate].x - this.x;
-    distY = bunnies[this.selectedMate].y - this.y;
+  if (this.selectedMate != null) {
+    distX = this.selectedMate.x - this.x;
+    distY = this.selectedMate.y - this.y;
   }
 
-  if (this.selectedMate >= 0 && distX * distX + distY * distY < Math.pow(this.r + bunnies[this.selectedMate].r, 2)) {
+  if (this.selectedMate != null && distX * distX + distY * distY < Math.pow(this.r + this.selectedMate.r, 2)) {
 
     this.urge = 0;
-    bunnies[this.selectedMate].urge = 0;
+    this.selectedMate.urge = 0;
 
     this.hunger += this.reproductionCost;
-    bunnies[this.selectedMate].hunger += bunnies[this.selectedMate].reproductionCost;
+    this.selectedMate.hunger += this.selectedMate.reproductionCost;
 
     /*independent assortment
 
@@ -219,18 +230,18 @@ Bunny.prototype.reproduce = function (sim, bunnies) {
       so: this is to ensure randomness. name and sprite are not random.
       will see if this actually matters later
     */
-    let speed = (Math.random() < 0.5) ? this.speed : bunnies[this.selectedMate].speed;
-    let speedCost = (Math.random() < 0.5) ? this.speedCost : bunnies[this.selectedMate].speedCost;
-    let vision = (Math.random() < 0.5) ? this.vision : bunnies[this.selectedMate].vision;
-    let visionCost = (Math.random() < 0.5) ? this.visionCost : bunnies[this.selectedMate].visionCost;
-    let hungerCost = (Math.random() < 0.5) ? this.hungerCost : bunnies[this.selectedMate].hungerCost;
-    let thirstCost = (Math.random() < 0.5) ? this.thirstCost : bunnies[this.selectedMate].thirstCost;
-    let hungerFromFood = (Math.random() < 0.5) ? this.hungerFromFood : bunnies[this.selectedMate].hungerFromFood;
-    let thirstFromWater = (Math.random() < 0.5) ? this.thirstFromWater : bunnies[this.selectedMate].thirstFromWater;
-    let maturityThreshold = (Math.random() < 0.5) ? this.maturityThreshold : bunnies[this.selectedMate].maturityThreshold;
-    let offspringReadiness = (Math.random() < 0.5) ? this.offspringReadiness : bunnies[this.selectedMate].offspringReadiness;
-    let urgeThreshold = (Math.random() < 0.5) ? this.urgeThreshold : bunnies[this.selectedMate].urgeThreshold;
-    let reproductionCost = (Math.random() < 0.5) ? this.reproductionCost : bunnies[this.selectedMate].reproductionCost;
+    let speed = (Math.random() < 0.5) ? this.speed : this.selectedMate.speed;
+    let speedCost = (Math.random() < 0.5) ? this.speedCost : this.selectedMate.speedCost;
+    let vision = (Math.random() < 0.5) ? this.vision : this.selectedMate.vision;
+    let visionCost = (Math.random() < 0.5) ? this.visionCost : this.selectedMate.visionCost;
+    let hungerCost = (Math.random() < 0.5) ? this.hungerCost : this.selectedMate.hungerCost;
+    let thirstCost = (Math.random() < 0.5) ? this.thirstCost : this.selectedMate.thirstCost;
+    let hungerFromFood = (Math.random() < 0.5) ? this.hungerFromFood : this.selectedMate.hungerFromFood;
+    let thirstFromWater = (Math.random() < 0.5) ? this.thirstFromWater : this.selectedMate.thirstFromWater;
+    let maturityThreshold = (Math.random() < 0.5) ? this.maturityThreshold : this.selectedMate.maturityThreshold;
+    let offspringReadiness = (Math.random() < 0.5) ? this.offspringReadiness : this.selectedMate.offspringReadiness;
+    let urgeThreshold = (Math.random() < 0.5) ? this.urgeThreshold : this.selectedMate.urgeThreshold;
+    let reproductionCost = (Math.random() < 0.5) ? this.reproductionCost : this.selectedMate.reproductionCost;
 
     addBunnyToArray(bunnies, sim, this.x, this.y,
       speed, speedCost,
@@ -239,11 +250,12 @@ Bunny.prototype.reproduce = function (sim, bunnies) {
       hungerFromFood, thirstFromWater,
       maturityThreshold, offspringReadiness,
       urgeThreshold, reproductionCost,
-      this.name, bunnies[this.selectedMate].spriteIndex);
+      this.name, this.selectedMate.spriteIndex);
 
     this.behavior = -1;
+    this.selectedMate = null;
 
-  } else if (this.selectedMate >= 0) {
+  } else if (this.selectedMate != null) {
 
     let theta = Math.atan2(distY, distX);
     this.velX += 1 * Math.cos(theta);
@@ -329,26 +341,26 @@ Bunny.prototype.decideBehavior = function (foxes) {
 Bunny.prototype.act = function (sprites, sim, bunnies, foxes, carrots, water) {
 
   //BEFORE DOING ANYTHING, RUN COLLISIONS WITH BUNNIES
-  let distX = 0;
-  let distY = 0;
-  let theta = 0;
+  // let distX = 0;
+  // let distY = 0;
+  // let theta = 0;
 
-  for (let i = 0; i < bunnies.length; i++) {
-    if (bunnies[i] != this) {
+  // for (let i = 0; i < bunnies.length; i++) {
+  //   if (bunnies[i] != this) {
 
-      distX = bunnies[i].x - this.x;
-      distY = bunnies[i].y - this.y;
+  //     distX = bunnies[i].x - this.x;
+  //     distY = bunnies[i].y - this.y;
 
-      if (distX * distX + distY * distY < 2 * this.r * 2 * this.r) {
+  //     if (distX * distX + distY * distY < 2 * this.r * 2 * this.r) {
 
-        theta = Math.atan2(distY, distX);
+  //       theta = Math.atan2(distY, distX);
 
-        this.velX -= this.speed * 0.25 * Math.cos(theta);
-        this.velY -= this.speed * 0.25 * Math.sin(theta);
-      }
+  //       this.velX -= this.speed * 0.25 * Math.cos(theta);
+  //       this.velY -= this.speed * 0.25 * Math.sin(theta);
+  //     }
 
-    }
-  }
+  //   }
+  // }
 
   //THEN, UPDATE BEHAVIOR
   this.decideBehavior(foxes);
