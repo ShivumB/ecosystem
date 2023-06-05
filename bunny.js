@@ -17,14 +17,14 @@ function Bunny(x, y,
   this.velY = 0;
 
   this.hunger = 0;
-  this.selectedFood = -1;
+  this.selectedFood = null;
 
   this.thirst = 0;
-  this.selectedWater = -1;
+  this.selectedWater = null;
 
   this.urge = 0;
   this.maturity = 0;
-  this.selectedMate = -1;
+  this.selectedMate = null;
 
   this.behavior = -1;
   this.frame = 0;
@@ -55,10 +55,9 @@ function Bunny(x, y,
 
 Bunny.prototype.findFood = function (carrots) {
 
+  if(this.selectedFood == null || !this.selectedFood.alive) {
 
-  if(this.selectedFood == -1 || !this.selectedFood.alive) {
-
-    this.selectedFood = -1;
+    this.selectedFood = null;
     let minDist = 1000000;
 
     let distX = 0;
@@ -80,24 +79,25 @@ Bunny.prototype.findFood = function (carrots) {
 
     }
   }
+  
 
   distX = 0;
   distY = 0;
-  if (this.selectedFood != -1) {
+  if (this.selectedFood != null) {
 
     distX = this.selectedFood.x - this.x;
     distY = this.selectedFood.y - this.y;
   }
 
-  if (this.selectedFood != -1 && distX * distX + distY * distY < Math.pow(this.selectedFood.r + this.r, 2)) {
+  if (this.selectedFood != null && distX * distX + distY * distY < Math.pow(this.selectedFood.r + this.r, 2)) {
 
     this.selectedFood.alive = false;
-    this.selectedFood = -1;
+    this.selectedFood = null;
     this.hunger = Math.max(0, this.hunger - this.hungerFromFood);
 
     if (this.hunger < 5) this.behavior = -1;
 
-  } else if (this.selectedFood != -1) {
+  } else if (this.selectedFood != null) {
 
     //HUNTING
     let theta = Math.atan2(distY, distX);
@@ -115,7 +115,8 @@ Bunny.prototype.findFood = function (carrots) {
 Bunny.prototype.findWater = function (water) {
 
 
-  if(this.selectedWater == -1) {    
+  if(this.selectedWater == null) {
+
     let minDist = 1000000;
 
     let distX = 0;
@@ -138,22 +139,23 @@ Bunny.prototype.findWater = function (water) {
 
     }
   }
+  
 
   distX = 0;
   distY = 0;
-  if (this.selectedWater != -1) {
+  if (this.selectedWater != null) {
     distX = this.selectedWater.x - this.x;
     distY = this.selectedWater.y - this.y;
   }
 
-  if (this.selectedWater != -1 && distX * distX + distY * distY < Math.pow(this.selectedWater.r + this.r + 5, 2)) {
+  if (this.selectedWater != null && distX * distX + distY * distY < Math.pow(this.selectedWater.r + this.r + 5, 2)) {
 
     this.thirst = Math.max(0, this.thirst - this.thirstFromWater);
 
     if (this.thirst < 10) this.behavior = -1;
-    this.selectedWater = -1;
+    this.selectedWater = null;
 
-  } else if (this.selectedWater != -1) {
+  } else if (this.selectedWater != null) {
 
     let theta = Math.atan2(distY, distX);
 
@@ -181,8 +183,8 @@ Bunny.prototype.explore = function () {
 Bunny.prototype.reproduce = function (sim, bunnies) {
 
 
-  if(this.selectedMate == -1 || !this.selectedMate.alive) {
-    this.selectedMate = -1;
+    if(this.selectedMate == null || !this.selectedMate.alive) {
+    this.selectedMate = null;
 
     let minDist = 1000000;
 
@@ -201,19 +203,20 @@ Bunny.prototype.reproduce = function (sim, bunnies) {
 
         if (mag < minDist) {
           minDist = mag;
-          this.selectedMate = i;
+          this.selectedMate = bunnies[i];
         }
 
       }
     }
   }
+  
 
-  if (this.selectedMate != -1) {
+  if (this.selectedMate != null) {
     distX = this.selectedMate.x - this.x;
     distY = this.selectedMate.y - this.y;
   }
 
-  if (this.selectedMate != -1 && distX * distX + distY * distY < Math.pow(this.r + this.selectedMate.r, 2)) {
+  if (this.selectedMate != null && distX * distX + distY * distY < Math.pow(this.r + this.selectedMate.r, 2)) {
 
     this.urge = 0;
     this.selectedMate.urge = 0;
@@ -253,9 +256,9 @@ Bunny.prototype.reproduce = function (sim, bunnies) {
       this.name, this.selectedMate.spriteIndex);
 
     this.behavior = -1;
-    this.selectedMate = -1;
+    this.selectedMate = null;
 
-  } else if (this.selectedMate != -1) {
+  } else if (this.selectedMate != null) {
 
     let theta = Math.atan2(distY, distX);
     this.velX += 1 * Math.cos(theta);

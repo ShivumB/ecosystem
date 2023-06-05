@@ -56,7 +56,7 @@ function Fox(x, y,
 Fox.prototype.findFood = function (bunnies) {
 
 
-    if(this.selectedFood == null || !this.selectedMate.alive) {
+    if(this.selectedFood == null || !this.selectedFood.alive) {
         this.selectedFood = null;
         let minDist = 1000000;
 
@@ -129,7 +129,7 @@ Fox.prototype.findWater = function (water) {
 
                 if (mag < minDist) {
                     minDist = mag;
-                    this.selectedWater = i;
+                    this.selectedWater = water[i];
                 }
             }
 
@@ -208,7 +208,7 @@ Fox.prototype.reproduce = function (sim, foxes) {
         distY = this.selectedMate.y - this.y;
     }
 
-    if (this.selectedMate >= 0 && distX * distX + distY * distY < Math.pow(this.r + this.selectedMate.r, 2)) {
+    if (this.selectedMate != null && distX * distX + distY * distY < Math.pow(this.r + this.selectedMate.r, 2)) {
 
         this.urge = 0;
         this.selectedMate.urge = 0;
